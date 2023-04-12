@@ -1,7 +1,7 @@
 // ** React Imports
-import { useState, Fragment } from 'react'
+import { useState, Fragment, forwardRef } from 'react'
 import { useRouter } from 'next/router'
-import { CircularProgressbar } from 'react-circular-progressbar'
+import LinearProgress from '@mui/material/LinearProgress'
 import { EditText } from 'react-edit-text'
 import 'react-edit-text/dist/index.css'
 import Box from '@mui/material/Box'
@@ -15,10 +15,15 @@ import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import TableContainer from '@mui/material/TableContainer'
+import moment from 'moment'
+import PriorityChip from 'src/@priority/Priority'
+import ProgressChip from 'src/@priority/Progress'
 
 // ** Icons Imports
 import ChevronUp from 'mdi-material-ui/ChevronUp'
 import ChevronDown from 'mdi-material-ui/ChevronDown'
+import IconCeklis from 'src/@icon/IconCeklis'
+import IconHapus from 'src/@icon/IconHapus'
 
 const Row = props => {
   // ** Props
@@ -26,9 +31,12 @@ const Row = props => {
   const router = useRouter()
   const { id } = router.query
 
-  // ** State
   const [open, setOpen] = useState(false)
   const [detailJOb, setdetailJOb] = useState(job)
+
+  const editdata = async ({ name, value, previousValue }) => {
+    console.log(value)
+  }
 
   const record = async ({ name, value, previousValue }) => {
     console.log('dodol', name, value)
@@ -57,7 +65,6 @@ const Row = props => {
         ...detailJOb, // that contains all the old items
         data
       ])
-      setOpen(false)
     } else {
       console.log('eroro')
     }
@@ -65,7 +72,7 @@ const Row = props => {
 
   return (
     <Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }} bgcolor='#F9F9F9'>
         <TableCell>
           <IconButton aria-label='expand row' size='small' onClick={() => setOpen(!open)}>
             {open ? <ChevronUp /> : <ChevronDown />}
@@ -75,41 +82,51 @@ const Row = props => {
         <TableCell component='th' scope='row'>
           {row.name}
         </TableCell>
-        <TableCell align='right'>sdfsdf</TableCell>
-        <TableCell align='right'>sdfsdfsd</TableCell>
+        <TableCell align='center'>{row.Job.length}</TableCell>
+        <TableCell align='center'>
+          <PriorityChip val={row.priority} />
+        </TableCell>
+        <TableCell width='40px' align='center'>
+          <EditText value={moment(row.endDate).format('DD/mm/yyyy')} name={11} onSave={editdata} />
+        </TableCell>
 
-        <TableCell align='right'>wdaeasd</TableCell>
-        <TableCell align='center'></TableCell>
+        <TableCell align='center'>
+          {' '}
+          <LinearProgress
+            color='primary'
+            value={Math.floor(Math.random() * 100)}
+            variant='determinate'
+            style={{ height: 17 }}
+          />
+        </TableCell>
+        <TableCell align='center'>
+          <ProgressChip val={row.progress} />
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell colSpan={1} sx={{ py: '0 !important' }}></TableCell>
-        <TableCell colSpan={6} sx={{ py: '0 !important' }}>
+        <TableCell colSpan={8} sx={{ py: '0 !important' }}>
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box sx={{ m: 2 }}>
               <Table size='small' aria-label='purchases'>
                 <TableBody>
                   {detailJOb.map((historyRow, i) => (
                     <TableRow key={i + 1}>
-                      <TableCell>{i + 1}</TableCell>
-                      <TableCell>
-                        {' '}
-                        <svg
-                          width='20px'
-                          height='20px'
-                          viewBox='0 0 1024 1024'
-                          class='icon'
-                          version='1.1'
-                          xmlns='http://www.w3.org/2000/svg'
-                        >
-                          <path d='M512 512m-448 0a448 448 0 1 0 896 0 448 448 0 1 0-896 0Z' fill='#4CAF50' />
-                          <path
-                            d='M738.133333 311.466667L448 601.6l-119.466667-119.466667-59.733333 59.733334 179.2 179.2 349.866667-349.866667z'
-                            fill='#CCFF90'
-                          />
-                        </svg>
+                      <TableCell width={'30px'}>{i + 1}</TableCell>
+                      <TableCell width={'30px'}>
+                        <IconCeklis w='20px' fillColor='silver' />
                       </TableCell>
-                      <TableCell>{historyRow.name}</TableCell>
-                      <TableCell>{historyRow.name}</TableCell>
+                      <TableCell align='left'>{historyRow.name}</TableCell>
+                      <TableCell align='center' width='30px'>
+                        <PriorityChip val={historyRow.priority} />
+                      </TableCell>
+                      <TableCell align='center'> {moment(historyRow.updatedAt).format('DD/MM/YY hh:mm')}</TableCell>
+                      <TableCell align='center' width='30px'>
+                        <ProgressChip val={historyRow.progress} />
+                      </TableCell>
+                      <TableCell width={'30px'}>
+                        <IconHapus w='20px' fillColor='silver' />
+                      </TableCell>
                     </TableRow>
                   ))}
 
@@ -119,11 +136,10 @@ const Row = props => {
                         width='20px'
                         height='20px'
                         viewBox='0 0 1024 1024'
-                        class='icon'
                         version='1.1'
                         xmlns='http://www.w3.org/2000/svg'
                       >
-                        <path d='M512 512m-448 0a448 448 0 1 0 896 0 448 448 0 1 0-896 0Z' fill='#cc8400' />
+                        <path d='M512 512m-448 0a448 448 0 1 0 896 0 448 448 0 1 0-896 0Z' fill='#337bff' />
                         <path d='M448 298.666667h128v426.666666h-128z' fill='#FFFFFF' />
                         <path d='M298.666667 448h426.666666v128H298.666667z' fill='#FFFFFF' />
                       </svg>
@@ -169,7 +185,6 @@ const TableCollapsible = ({ data }) => {
 
     const data = await res.json()
     if (res.status === 201) {
-      console.log(data)
       setnilainya([
         ...nilainya, // that contains all the old items
         data
@@ -191,10 +206,19 @@ const TableCollapsible = ({ data }) => {
             <TableCell />
             <TableCell sx={{ width: 30 }}>no</TableCell>
             <TableCell>Nama Pekerjaan</TableCell>
-            <TableCell align='right'>item</TableCell>
-            <TableCell align='right'>Start</TableCell>
-            <TableCell align='right'>end</TableCell>
-            <TableCell align='center'>Status</TableCell>
+            <TableCell width={'30px'} align='center'>
+              item
+            </TableCell>
+            <TableCell width='40px' align='center'>
+              Prioritas
+            </TableCell>
+            <TableCell width='40px' align='center'>
+              Target
+            </TableCell>
+            <TableCell align='center'>Progress</TableCell>
+            <TableCell align='center' width='50px'>
+              Status
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -202,25 +226,19 @@ const TableCollapsible = ({ data }) => {
             <Row key={i} row={row} job={row.Job} dodol={i} />
           ))}
 
-          <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+          <TableRow sx={{ '& > *': { borderBottom: 'unset' } }} bgcolor='F9F9F9'>
             <TableCell component='th' scope='row'>
-              <svg
-                width='20px'
-                height='20px'
-                viewBox='0 0 1024 1024'
-                class='icon'
-                version='1.1'
-                xmlns='http://www.w3.org/2000/svg'
-              >
+              <svg width='20px' height='20px' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg'>
                 <path d='M512 512m-448 0a448 448 0 1 0 896 0 448 448 0 1 0-896 0Z' fill='#337bff' />
                 <path d='M448 298.666667h128v426.666666h-128z' fill='#FFFFFF' />
                 <path d='M298.666667 448h426.666666v128H298.666667z' fill='#FFFFFF' />
               </svg>
             </TableCell>
-            <TableCell colSpan={4}>
-              <EditText placeholder='Tambah Tugas' name={11} onSave={record} />
+            <TableCell colSpan={5}>
+              <EditText placeholder='Tambah Pekerjaan' name={11} onSave={record} />
             </TableCell>
 
+            <TableCell align='center'></TableCell>
             <TableCell align='center'></TableCell>
           </TableRow>
         </TableBody>

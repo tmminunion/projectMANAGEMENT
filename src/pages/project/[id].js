@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import CardMembership from 'src/views/cards/CardProjek'
-
+import TableCollapsible from 'src/views/tables/DaftarJob'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import TabList from '@mui/lab/TabList'
@@ -12,14 +12,16 @@ import { styled } from '@mui/material/styles'
 import MuiTab from '@mui/material/Tab'
 
 // ** Icons Imports
-import AccountOutline from 'mdi-material-ui/AccountOutline'
+
 import LockOpenOutline from 'mdi-material-ui/LockOpenOutline'
 import InformationOutline from 'mdi-material-ui/InformationOutline'
+import IconList from 'src/@icon/IconList'
+import IconCatatan from 'src/@icon/IconCatatan'
 
 // ** Demo Tabs Imports
 import TabInfo from 'src/views/account-settings/TabInfo'
-import TabAccount from 'src/views/account-settings/TabAccount'
-import TabSecurity from 'src/views/account-settings/TabSecurity'
+
+import TabCatatan from 'src/views/account-settings/TabCatatan'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
@@ -54,6 +56,7 @@ export async function getServerSideProps(context) {
       id: parsedId
     },
     include: {
+      Catatan: true,
       Task: {
         include: {
           Job: true
@@ -61,7 +64,6 @@ export async function getServerSideProps(context) {
       }
     }
   })
-  console.log(projects)
 
   return {
     props: {
@@ -95,8 +97,8 @@ const CardBasic = ({ projects }) => {
                 value='account'
                 label={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <AccountOutline />
-                    <TabName>Account</TabName>
+                    <IconList w='25px' />
+                    <TabName>DAFTAR PEKERJAAN</TabName>
                   </Box>
                 }
               />
@@ -104,8 +106,8 @@ const CardBasic = ({ projects }) => {
                 value='security'
                 label={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <LockOpenOutline />
-                    <TabName>Security</TabName>
+                    <IconCatatan w='25px' />
+                    <TabName>CATATAN</TabName>
                   </Box>
                 }
               />
@@ -114,19 +116,19 @@ const CardBasic = ({ projects }) => {
                 label={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <InformationOutline />
-                    <TabName>Info</TabName>
+                    <TabName>DISKUSI</TabName>
                   </Box>
                 }
               />
             </TabList>
 
-            <TabPanel sx={{ p: 0 }} value='account'>
-              <TabAccount data={projects} />
+            <TabPanel sx={{ p: 5 }} value='account'>
+              <TableCollapsible data={projects} />
             </TabPanel>
-            <TabPanel sx={{ p: 0 }} value='security'>
-              <TabSecurity />
+            <TabPanel sx={{ p: 5 }} value='security'>
+              <TabCatatan data={projects.Catatan} />
             </TabPanel>
-            <TabPanel sx={{ p: 0 }} value='info'>
+            <TabPanel sx={{ p: 5 }} value='info'>
               <TabInfo />
             </TabPanel>
           </TabContext>

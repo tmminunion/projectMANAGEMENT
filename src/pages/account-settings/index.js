@@ -18,7 +18,7 @@ import InformationOutline from 'mdi-material-ui/InformationOutline'
 // ** Demo Tabs Imports
 import TabInfo from 'src/views/account-settings/TabInfo'
 import TabAccount from 'src/views/account-settings/TabAccount'
-import TabSecurity from 'src/views/account-settings/TabSecurity'
+import TabSecurity from 'src/views/account-settings/TabCatatan'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'

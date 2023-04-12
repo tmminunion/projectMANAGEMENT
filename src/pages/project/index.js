@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import CardMembership from 'src/views/cards/CardMembership'
 import Modal from '@mui/material/Modal'
-import AddIcon from '@mui/icons-material/Add'
+
 import { PrismaClient } from '@prisma/client'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -57,9 +57,8 @@ const CardBasic = ({ projects }) => {
         <Grid item xs={12} sx={{ paddingBottom: 4 }}>
           <Typography variant='h5'>Daftar project</Typography>
         </Grid>
-
         {projects.map((project, i) => (
-          <Grid item xs={12} md={12}>
+          <Grid item xs={12} md={12} key={i}>
             <CardMembership indek={project.id} nama={project.name} desc={project.description} />
           </Grid>
         ))}

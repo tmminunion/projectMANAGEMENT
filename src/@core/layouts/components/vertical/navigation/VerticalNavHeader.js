@@ -6,10 +6,6 @@ import Box from '@mui/material/Box'
 import { styled, useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
-import { color, warning } from 'framer-motion'
-
 // ** Styled Components
 const MenuHeaderWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',

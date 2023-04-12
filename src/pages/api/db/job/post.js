@@ -21,5 +21,15 @@ export default async function handler(req, res) {
     }
   })
 
+  const log = await prisma.Catatan.create({
+    data: {
+      title: name,
+      nama: 'info',
+      content: `Tugas baru di buat -> ${name}`,
+      projectId,
+      authorId: 'up'
+    }
+  })
+
   res.status(201).json(job)
 }
