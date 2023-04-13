@@ -1,7 +1,7 @@
 import Chip from '@mui/material/Chip'
 
-const priorityOptions = [
-  { label: 'Sedang', color: 'success' },
+export const priorityOptions = [
+  { label: 'Biasa', color: 'success' },
   { label: 'Penting', color: 'warning' },
   { label: 'Mendesak', color: 'error' },
   { label: 'done', color: 'secondary' }

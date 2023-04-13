@@ -12,14 +12,16 @@ import TableRow from '@mui/material/TableRow'
 import TableHead from '@mui/material/TableHead'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
-import Typography from '@mui/material/Typography'
+import IconPlus from 'src/@icon/IconPlus'
 import IconButton from '@mui/material/IconButton'
 import TableContainer from '@mui/material/TableContainer'
 import moment from 'moment'
-import PriorityChip from 'src/@priority/Priority'
+import PriorityChip, { priorityOptions } from 'src/@priority/Priority'
 import ProgressChip from 'src/@priority/Progress'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
 
-// ** Icons Imports
 import ChevronUp from 'mdi-material-ui/ChevronUp'
 import ChevronDown from 'mdi-material-ui/ChevronDown'
 import IconCeklis from 'src/@icon/IconCeklis'
@@ -27,7 +29,7 @@ import IconHapus from 'src/@icon/IconHapus'
 
 const Row = props => {
   // ** Props
-  const { row, dodol, job } = props
+  const { row, dodol, job, setupdate } = props
   const router = useRouter()
   const { id } = router.query
 
@@ -54,13 +56,14 @@ const Row = props => {
         statustask: 0,
         progress: 0,
         onprogress: 0,
+
         projectId: parseInt(id)
       })
     })
 
     const data = await res.json()
     if (res.status === 201) {
-      console.log(`Job with ID ${data.id} has been created`)
+      setupdate(true)
       setdetailJOb([
         ...detailJOb, // that contains all the old items
         data
@@ -91,13 +94,15 @@ const Row = props => {
         </TableCell>
 
         <TableCell align='center'>
-          {' '}
           <LinearProgress
             color='primary'
             value={Math.floor(Math.random() * 100)}
             variant='determinate'
             style={{ height: 17 }}
           />
+        </TableCell>
+        <TableCell align='center' width={'10px'}>
+          100%
         </TableCell>
         <TableCell align='center'>
           <ProgressChip val={row.progress} />
@@ -132,17 +137,7 @@ const Row = props => {
 
                   <TableRow>
                     <TableCell sx={{ width: 30 }}>
-                      <svg
-                        width='20px'
-                        height='20px'
-                        viewBox='0 0 1024 1024'
-                        version='1.1'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path d='M512 512m-448 0a448 448 0 1 0 896 0 448 448 0 1 0-896 0Z' fill='#337bff' />
-                        <path d='M448 298.666667h128v426.666666h-128z' fill='#FFFFFF' />
-                        <path d='M298.666667 448h426.666666v128H298.666667z' fill='#FFFFFF' />
-                      </svg>
+                      <IconPlus w={'20px'} />
                     </TableCell>
                     <TableCell colSpan={2} align='left'>
                       <EditText placeholder='Tambah Tugas' name={row.id} onSave={record} />
@@ -158,10 +153,18 @@ const Row = props => {
   )
 }
 
-const TableCollapsible = ({ data }) => {
-  const [nilainya, setnilainya] = useState(data.Task)
+const DaftarJob = ({ data, setTask, update, setupdate, valuex }) => {
   const router = useRouter()
+  const [Tage, settage] = useState(0)
   const { id } = router.query
+
+  if (update && valuex > 0) {
+    router.reload()
+  }
+
+  const handleChange = event => {
+    settage(event.target.value)
+  }
 
   const record = async ({ name, value, previousValue }) => {
     const datatas = parseInt(id)
@@ -178,16 +181,17 @@ const TableCollapsible = ({ data }) => {
         projectId: datatas,
         status: 0,
         progress: 0,
+        priority: Tage,
         onprogress: 0,
         endDate: formattedDate
       })
     })
 
-    const data = await res.json()
+    const datanew = await res.json()
     if (res.status === 201) {
-      setnilainya([
-        ...nilainya, // that contains all the old items
-        data
+      setTask([
+        ...data, // that contains all the old items
+        datanew
       ])
       const input = document.querySelector(`input[name="${name}"]`)
       if (input) {
@@ -216,30 +220,37 @@ const TableCollapsible = ({ data }) => {
               Target
             </TableCell>
             <TableCell align='center'>Progress</TableCell>
+            <TableCell align='center' width={'10px'}></TableCell>
             <TableCell align='center' width='50px'>
               Status
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {nilainya.map((row, i) => (
-            <Row key={i} row={row} job={row.Job} dodol={i} />
+          {data.map((row, i) => (
+            <Row key={i} row={row} job={row.Job} dodol={i} setupdate={setupdate} />
           ))}
 
           <TableRow sx={{ '& > *': { borderBottom: 'unset' } }} bgcolor='F9F9F9'>
-            <TableCell component='th' scope='row'>
-              <svg width='20px' height='20px' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg'>
-                <path d='M512 512m-448 0a448 448 0 1 0 896 0 448 448 0 1 0-896 0Z' fill='#337bff' />
-                <path d='M448 298.666667h128v426.666666h-128z' fill='#FFFFFF' />
-                <path d='M298.666667 448h426.666666v128H298.666667z' fill='#FFFFFF' />
-              </svg>
+            <TableCell align='right'>
+              <IconPlus w={'20px'} />
             </TableCell>
-            <TableCell colSpan={5}>
+            <TableCell colSpan={3}>
               <EditText placeholder='Tambah Pekerjaan' name={11} onSave={record} />
+            </TableCell>{' '}
+            <TableCell align='center'>
+              <FormControl>
+                <Select value={Tage} onChange={handleChange} renderValue={value => <PriorityChip val={value} />}>
+                  {priorityOptions.map((name, i) => (
+                    <MenuItem value={i} key={i}>
+                      {name.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </TableCell>
-
             <TableCell align='center'></TableCell>
-            <TableCell align='center'></TableCell>
+            <TableCell align='center' colSpan={3}></TableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -247,4 +258,4 @@ const TableCollapsible = ({ data }) => {
   )
 }
 
-export default TableCollapsible
+export default DaftarJob

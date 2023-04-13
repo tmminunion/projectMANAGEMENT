@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography'
 import TableContainer from '@mui/material/TableContainer'
 import LinearProgress from '@mui/material/LinearProgress'
 import Link from '@mui/material/Link'
+import ProgressChip from 'src/@priority/Progress'
 
 const statusObj = {
   1: { color: 'info' },
@@ -27,7 +28,7 @@ const DashboardTable = ({ projects }) => {
     <Card>
       <TableContainer>
         <Table sx={{ minWidth: 800 }} aria-label='table in dashboard'>
-          <TableHead>
+          <TableHead bgcolor='#ffb400'>
             <TableRow>
               <TableCell>No</TableCell>
               <TableCell>Nama</TableCell>
@@ -57,20 +58,19 @@ const DashboardTable = ({ projects }) => {
                 </TableCell>
 
                 <TableCell align='center'>
-                  <Chip
-                    label='onprogress'
-                    color={statusObj[2].color}
-                    sx={{
-                      height: 24,
-                      fontSize: '0.75rem',
-                      textTransform: 'capitalize',
-                      '& .MuiChip-label': { fontWeight: 500 }
-                    }}
-                  />
+                  <ProgressChip val={row.progress} />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
+          <TableHead>
+            <TableRow bgcolor='#ffb400'>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell align='center'></TableCell>
+              <TableCell align='center'></TableCell>
+            </TableRow>
+          </TableHead>
         </Table>
       </TableContainer>
     </Card>

@@ -2,7 +2,6 @@
 import Grid from '@mui/material/Grid'
 import { PrismaClient } from '@prisma/client'
 
-// ** Icons Imports
 import Poll from 'mdi-material-ui/Poll'
 import CurrencyUsd from 'mdi-material-ui/CurrencyUsd'
 import HelpCircleOutline from 'mdi-material-ui/HelpCircleOutline'
@@ -22,6 +21,7 @@ import StatisticsCard from 'src/views/dashboard/StatisticsCard'
 import WeeklyOverview from 'src/views/dashboard/WeeklyOverview'
 import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
 import SalesByCountries from 'src/views/dashboard/SalesByCountries'
+import { useState } from 'react'
 
 export async function getServerSideProps(context) {
   const prisma = new PrismaClient()
@@ -30,8 +30,16 @@ export async function getServerSideProps(context) {
     select: {
       id: true,
       name: true,
+      progress: true,
       description: true,
       startDate: true // include startDate in the select statement
+    }
+  })
+
+  const Catatan = await prisma.Catatan.findMany({
+    take: 4,
+    orderBy: {
+      createdAt: 'desc'
     }
   })
 
@@ -42,12 +50,15 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      projects: serializedProjects
+      projects: serializedProjects,
+      Catatan: JSON.parse(JSON.stringify(Catatan))
     }
   }
 }
 
-const Dashboard = ({ projects }) => {
+const Dashboard = ({ projects, Catatan }) => {
+  const [Catatanx, SetCatatanx] = useState(Catatan)
+
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
@@ -113,7 +124,7 @@ const Dashboard = ({ projects }) => {
           <Table projects={projects} />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <SalesByCountries />
+          <SalesByCountries data={Catatanx} />
         </Grid>
         <Grid item xs={12} md={12} lg={8}>
           <DepositWithdraw />

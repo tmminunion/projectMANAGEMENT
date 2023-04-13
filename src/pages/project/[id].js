@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import CardMembership from 'src/views/cards/CardProjek'
-import TableCollapsible from 'src/views/tables/DaftarJob'
+import DaftarJob from 'src/views/tables/DaftarJob'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import TabList from '@mui/lab/TabList'
@@ -73,10 +73,16 @@ export async function getServerSideProps(context) {
 }
 
 const CardBasic = ({ projects }) => {
-  const [value, setValue] = useState('account')
+  const [value, setValue] = useState('0')
+  const [valuex, setValuex] = useState(0)
+
+  const [Task, setTask] = useState(projects.Task)
+  const [update, setupdate] = useState(false)
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
+    const nedara = valuex + parseInt(newValue)
+    setValuex(nedara)
   }
 
   return (
@@ -94,7 +100,7 @@ const CardBasic = ({ projects }) => {
               sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
             >
               <Tab
-                value='account'
+                value='0'
                 label={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <IconList w='25px' />
@@ -103,7 +109,7 @@ const CardBasic = ({ projects }) => {
                 }
               />
               <Tab
-                value='security'
+                value='1'
                 label={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <IconCatatan w='25px' />
@@ -112,7 +118,7 @@ const CardBasic = ({ projects }) => {
                 }
               />
               <Tab
-                value='info'
+                value='2'
                 label={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <InformationOutline />
@@ -122,13 +128,13 @@ const CardBasic = ({ projects }) => {
               />
             </TabList>
 
-            <TabPanel sx={{ p: 5 }} value='account'>
-              <TableCollapsible data={projects} />
+            <TabPanel sx={{ p: 5 }} value='0'>
+              <DaftarJob data={Task} setTask={setTask} setupdate={setupdate} update={update} valuex={valuex} />
             </TabPanel>
-            <TabPanel sx={{ p: 5 }} value='security'>
+            <TabPanel sx={{ p: 5 }} value='1'>
               <TabCatatan data={projects.Catatan} />
             </TabPanel>
-            <TabPanel sx={{ p: 5 }} value='info'>
+            <TabPanel sx={{ p: 5 }} value='2'>
               <TabInfo />
             </TabPanel>
           </TabContext>
