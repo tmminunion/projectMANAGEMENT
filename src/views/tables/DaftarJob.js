@@ -32,9 +32,13 @@ const Row = props => {
   const { row, dodol, job, setupdate } = props
   const router = useRouter()
   const { id } = router.query
-
+  const [Tagex, settagex] = useState(0)
   const [open, setOpen] = useState(false)
   const [detailJOb, setdetailJOb] = useState(job)
+
+  const handleChangex = event => {
+    settagex(event.target.value)
+  }
 
   const editdata = async ({ name, value, previousValue }) => {
     console.log(value)
@@ -56,7 +60,7 @@ const Row = props => {
         statustask: 0,
         progress: 0,
         onprogress: 0,
-
+        priority: Tagex,
         projectId: parseInt(id)
       })
     })
@@ -125,7 +129,7 @@ const Row = props => {
                       <TableCell align='center' width='30px'>
                         <PriorityChip val={historyRow.priority} />
                       </TableCell>
-                      <TableCell align='center'> {moment(historyRow.updatedAt).format('DD/MM/YY hh:mm')}</TableCell>
+                      <TableCell align='center'> {moment(historyRow.updatedAt).format('DD/MM/YY HH:mm')}</TableCell>
                       <TableCell align='center' width='30px'>
                         <ProgressChip val={historyRow.progress} />
                       </TableCell>
@@ -136,11 +140,24 @@ const Row = props => {
                   ))}
 
                   <TableRow>
-                    <TableCell sx={{ width: 30 }}>
-                      <IconPlus w={'20px'} />
-                    </TableCell>
+                    <TableCell sx={{ width: 30 }}>{/* <IconPlus w={'20px'} /> */}</TableCell>
                     <TableCell colSpan={2} align='left'>
                       <EditText placeholder='Tambah Tugas' name={row.id} onSave={record} />
+                    </TableCell>
+                    <TableCell>
+                      <FormControl>
+                        <Select
+                          value={Tagex}
+                          onChange={handleChangex}
+                          renderValue={value => <PriorityChip val={value} />}
+                        >
+                          {priorityOptions.map((name, i) => (
+                            <MenuItem value={i} key={i}>
+                              {name.label}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </TableCell>
                   </TableRow>
                 </TableBody>

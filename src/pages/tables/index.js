@@ -10,7 +10,7 @@ import TableBasic from 'src/views/tables/TableBasic'
 import TableDense from 'src/views/tables/TableDense'
 import TableSpanning from 'src/views/tables/TableSpanning'
 import TableCustomized from 'src/views/tables/TableCustomized'
-import TableCollapsible from 'src/views/tables/DaftarJob'
+
 import TableStickyHeader from 'src/views/tables/TableStickyHeader'
 
 const MUITable = () => {
@@ -42,12 +42,7 @@ const MUITable = () => {
           <TableStickyHeader />
         </Card>
       </Grid>
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title='Collapsible Table' titleTypographyProps={{ variant: 'h6' }} />
-          <TableCollapsible />
-        </Card>
-      </Grid>
+
       <Grid item xs={12}>
         <Card>
           <CardHeader title='Spanning Table' titleTypographyProps={{ variant: 'h6' }} />

@@ -19,7 +19,7 @@ import Trophy from 'src/views/dashboard/Trophy'
 import TotalEarning from 'src/views/dashboard/TotalEarning'
 import StatisticsCard from 'src/views/dashboard/StatisticsCard'
 import WeeklyOverview from 'src/views/dashboard/WeeklyOverview'
-import DepositWithdraw from 'src/views/dashboard/DepositWithdraw'
+import DepositWithdraw from 'src/views/dashboard/JOBlistIndex'
 import SalesByCountries from 'src/views/dashboard/SalesByCountries'
 import { useState } from 'react'
 
@@ -43,20 +43,37 @@ export async function getServerSideProps(context) {
     }
   })
 
-  const serializedProjects = projects.map(project => ({
-    ...project,
-    startDate: project.startDate.toISOString() // convert Date to ISO string
-  }))
+  const Job = await prisma.Job.findMany({
+    take: 5,
+    where: {
+      onprogress: 0
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
+
+  const Jobfin = await prisma.Job.findMany({
+    take: 5,
+    where: {
+      onprogress: 1
+    },
+    orderBy: {
+      updatedAt: 'desc'
+    }
+  })
 
   return {
     props: {
-      projects: serializedProjects,
-      Catatan: JSON.parse(JSON.stringify(Catatan))
+      projects: JSON.parse(JSON.stringify(projects)),
+      Catatan: JSON.parse(JSON.stringify(Catatan)),
+      Jobbel: JSON.parse(JSON.stringify(Job)),
+      Jobfin: JSON.parse(JSON.stringify(Jobfin))
     }
   }
 }
 
-const Dashboard = ({ projects, Catatan }) => {
+const Dashboard = ({ projects, Catatan, Jobbel, Jobfin }) => {
   const [Catatanx, SetCatatanx] = useState(Catatan)
 
   return (
@@ -127,7 +144,7 @@ const Dashboard = ({ projects, Catatan }) => {
           <SalesByCountries data={Catatanx} />
         </Grid>
         <Grid item xs={12} md={12} lg={8}>
-          <DepositWithdraw />
+          <DepositWithdraw Job={Jobbel} Jobfin={Jobfin} />
         </Grid>
       </Grid>
     </ApexChartWrapper>

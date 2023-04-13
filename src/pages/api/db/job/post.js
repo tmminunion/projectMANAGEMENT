@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' })
   }
 
-  const { name, taskId, status, statustask, progress, onprogress, projectId } = req.body
+  const { name, taskId, status, statustask, progress, onprogress, projectId, priority } = req.body
 
   const job = await prisma.Job.create({
     data: {
@@ -16,6 +16,7 @@ export default async function handler(req, res) {
       status,
       statustask,
       progress,
+      priority,
       onprogress,
       projectId
     }

@@ -11,7 +11,7 @@ const TabCatatan = ({ data }) => {
       <Stack sx={{ width: '100%' }} spacing={2}>
         {data.map(row => (
           <Alert severity={row.nama} key={row.id}>
-            {moment(row.createdAt).format('DD/MM/YYYY hh:mm')} wib : {row.content}
+            {moment(row.createdAt).format('DD/MM/YYYY HH:mm')} wib : {row.content}
           </Alert>
         ))}
       </Stack>
