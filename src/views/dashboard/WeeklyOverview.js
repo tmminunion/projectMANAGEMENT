@@ -7,6 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
+import { useState, useEffect } from 'react'
 
 // ** Icons Imports
 import DotsVertical from 'mdi-material-ui/DotsVertical'
@@ -14,96 +15,79 @@ import DotsVertical from 'mdi-material-ui/DotsVertical'
 // ** Custom Components Imports
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
-const WeeklyOverview = () => {
+const WeeklyOverview = ({ persen }) => {
   // ** Hook
   const theme = useTheme()
+  const [colorfin, setcolorfin] = useState('#ff0000')
+  useEffect(() => {
+    if (persen > 66) {
+      setcolorfin('#56ca00') // hijau
+    } else if (persen > 33) {
+      setcolorfin('#ffcc00') // kuning
+    } else {
+      setcolorfin('#ff0000') // merah
+    }
+  }, [persen])
 
   const options = {
     chart: {
-      parentHeightOffset: 0,
-      toolbar: { show: false }
+      type: 'radialBar'
     },
+    color: ['#1E88E5'],
     plotOptions: {
-      bar: {
-        borderRadius: 9,
-        distributed: true,
-        columnWidth: '40%',
-        endingShape: 'rounded',
-        startingShape: 'rounded'
+      radialBar: {
+        hollow: {
+          margin: 0,
+          size: '50%',
+          background: colorfin
+        },
+        track: {
+          dropShadow: {
+            enabled: true,
+            top: 0,
+            left: 0,
+            blur: 4,
+            opacity: 0.75
+          }
+        },
+        dataLabels: {
+          name: {
+            offsetY: -1,
+            color: '#d3d3d3',
+            fontSize: '1px'
+          },
+          value: {
+            color: 'gold',
+            fontSize: '50px',
+            show: false
+          }
+        }
       }
     },
-    stroke: {
-      width: 2,
-      colors: [theme.palette.background.paper]
+    fill: {
+      type: 'solid',
+      colors: ['#9155fd'] // Tiga warna yang berbeda
     },
-    legend: { show: false },
-    grid: {
-      strokeDashArray: 7,
-      padding: {
-        top: -1,
-        right: 0,
-        left: -12,
-        bottom: 5
-      }
-    },
-    dataLabels: { enabled: false },
-    colors: [
-      theme.palette.background.default,
-      theme.palette.background.default,
-      theme.palette.background.default,
-      theme.palette.primary.main,
-      theme.palette.background.default,
-      theme.palette.background.default
-    ],
-    states: {
-      hover: {
-        filter: { type: 'none' }
-      },
-      active: {
-        filter: { type: 'none' }
-      }
-    },
-    xaxis: {
-      categories: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-      tickPlacement: 'on',
-      labels: { show: false },
-      axisTicks: { show: false },
-      axisBorder: { show: false }
-    },
-    yaxis: {
-      show: true,
-      tickAmount: 4,
-      labels: {
-        offsetX: -17,
-        formatter: value => `${value > 999 ? `${(value / 1000).toFixed(0)}` : value}k`
-      }
-    }
+
+    labels: ['']
   }
 
   return (
     <Card>
       <CardHeader
-        title='Weekly Overview'
+        title='Pencapaian'
         titleTypographyProps={{
           sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
         }}
-        action={
-          <IconButton size='small' aria-label='settings' className='card-more-options' sx={{ color: 'text.secondary' }}>
-            <DotsVertical />
-          </IconButton>
-        }
       />
       <CardContent sx={{ '& .apexcharts-xcrosshairs.apexcharts-active': { opacity: 0 } }}>
-        <ReactApexcharts type='bar' height={205} options={options} series={[{ data: [37, 57, 45, 75, 57, 40, 65] }]} />
+        <ReactApexcharts type='radialBar' height={265} options={options} series={[persen]} />
         <Box sx={{ mb: 7, display: 'flex', alignItems: 'center' }}>
           <Typography variant='h5' sx={{ mr: 4 }}>
-            45%
+            {persen}%
           </Typography>
-          <Typography variant='body2'>Your sales performance is 45% 😎 better compared to last month</Typography>
+          <Typography variant='body2'>Pencapaian Tugas yang telah diselesaikan secara Total {persen}%</Typography>
         </Box>
-        <Button fullWidth variant='contained'>
-          Details
-        </Button>
       </CardContent>
     </Card>
   )

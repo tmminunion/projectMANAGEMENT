@@ -17,27 +17,27 @@ import AccountOutline from 'mdi-material-ui/AccountOutline'
 
 const salesData = [
   {
-    stats: '245k',
-    title: 'Sales',
+    stats: '0',
+    title: 'Pekerjaan',
     color: 'primary',
     icon: <TrendingUp sx={{ fontSize: '1.75rem' }} />
   },
   {
-    stats: '12.5k',
-    title: 'Customers',
+    stats: '0',
+    title: 'Tugas',
     color: 'success',
     icon: <AccountOutline sx={{ fontSize: '1.75rem' }} />
   },
   {
-    stats: '1.54k',
+    stats: '0',
     color: 'warning',
-    title: 'Products',
+    title: 'Catatan',
     icon: <CellphoneLink sx={{ fontSize: '1.75rem' }} />
   },
   {
-    stats: '$88k',
+    stats: '0',
     color: 'info',
-    title: 'Revenue',
+    title: 'Komentar',
     icon: <CurrencyUsd sx={{ fontSize: '1.75rem' }} />
   }
 ]
@@ -68,22 +68,22 @@ const renderStats = () => {
   ))
 }
 
-const StatisticsCard = () => {
+const StatisticsCard = ({ countTask, countJOB, countLog, countPost }) => {
+  salesData[0].stats = countTask
+  salesData[1].stats = countJOB
+  salesData[2].stats = countLog
+  salesData[3].stats = countPost
+
   return (
     <Card>
       <CardHeader
-        title='Statistics Card'
-        action={
-          <IconButton size='small' aria-label='settings' className='card-more-options' sx={{ color: 'text.secondary' }}>
-            <DotsVertical />
-          </IconButton>
-        }
+        title='Data Statistik'
         subheader={
           <Typography variant='body2'>
             <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>
-              Total 48.5% growth
+              Total {countTask + countJOB + countLog + countPost} data
             </Box>{' '}
-            😎 this month
+            😎 di bulan ini
           </Typography>
         }
         titleTypographyProps={{

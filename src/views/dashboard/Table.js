@@ -22,7 +22,23 @@ const statusObj = {
 }
 
 const DashboardTable = ({ projects }) => {
-  console.log(projects)
+  function countOnProgress(projectId) {
+    const project = projects.find(project => project.id === projectId)
+
+    if (!project) {
+      throw new Error(`Project with ID ${projectId} not found`)
+    }
+
+    let onProgressCount = 0
+
+    project.Jobs.forEach(job => {
+      if (job.onprogress === 1) {
+        onProgressCount++
+      }
+    })
+
+    return onProgressCount
+  }
 
   return (
     <Card>
@@ -33,6 +49,7 @@ const DashboardTable = ({ projects }) => {
               <TableCell>No</TableCell>
               <TableCell>Nama</TableCell>
               <TableCell align='center'>Progress</TableCell>
+              <TableCell align='center'>%</TableCell>
               <TableCell align='center'>Status</TableCell>
             </TableRow>
           </TableHead>
@@ -50,15 +67,19 @@ const DashboardTable = ({ projects }) => {
                 </TableCell>
                 <TableCell sx={{ width: '40%' }}>
                   <LinearProgress
-                    color='primary'
-                    value={Math.floor(Math.random() * 100)}
+                    value={row && row.Jobs ? ((countOnProgress(row.id) / row.Jobs.length) * 100).toFixed(0) : 0}
                     variant='determinate'
                     style={{ height: 17 }}
+                    color='primary'
                   />
                 </TableCell>
-
+                <TableCell align='center'>{((countOnProgress(row.id) / row.Jobs.length) * 100).toFixed(0)}%</TableCell>
                 <TableCell align='center'>
-                  <ProgressChip val={row.progress} />
+                  {(countOnProgress(row.id) / row.Jobs.length) * 100 == 100 ? (
+                    <ProgressChip val={4} />
+                  ) : (
+                    <ProgressChip val={row.progress} />
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -66,7 +87,7 @@ const DashboardTable = ({ projects }) => {
           <TableHead>
             <TableRow bgcolor='#ffb400'>
               <TableCell></TableCell>
-              <TableCell></TableCell>
+              <TableCell></TableCell> <TableCell></TableCell>
               <TableCell align='center'></TableCell>
               <TableCell align='center'></TableCell>
             </TableRow>

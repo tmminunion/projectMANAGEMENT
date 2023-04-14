@@ -1,10 +1,9 @@
 import Chip from '@mui/material/Chip'
 
 export const priorityOptions = [
-  { label: 'Biasa', color: 'success' },
+  { label: 'Normal', color: 'success' },
   { label: 'Penting', color: 'warning' },
-  { label: 'Mendesak', color: 'error' },
-  { label: 'done', color: 'secondary' }
+  { label: 'Mendesak', color: 'error' }
 ]
 
 export default function PriorityChip(props) {

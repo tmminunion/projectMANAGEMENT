@@ -45,7 +45,6 @@ const Row = props => {
   }
 
   const record = async ({ name, value, previousValue }) => {
-    console.log('dodol', name, value)
     const datatas = parseInt(name)
 
     const res = await fetch('/api/db/job/post', {
@@ -75,6 +74,33 @@ const Row = props => {
     } else {
       console.log('eroro')
     }
+  }
+
+  const completeTask = async idx => {
+    const updatedRows = detailJOb.map(historyRow => {
+      if (historyRow.id === idx) {
+        historyRow.onprogress = 1
+        historyRow.progress = 4
+      }
+
+      return historyRow
+    })
+    setdetailJOb(updatedRows)
+
+    const res = await fetch('/api/db/job/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: idx,
+        progress: 4,
+        onprogress: 1,
+        projectId: parseInt(id)
+      })
+    })
+
+    const data = await res.json()
   }
 
   return (
@@ -122,8 +148,16 @@ const Row = props => {
                   {detailJOb.map((historyRow, i) => (
                     <TableRow key={i + 1}>
                       <TableCell width={'30px'}>{i + 1}</TableCell>
-                      <TableCell width={'30px'}>
-                        <IconCeklis w='20px' fillColor='silver' />
+                      <TableCell
+                        width={'30px'}
+                        onClick={() => completeTask(historyRow.id)}
+                        id={'Cell_' + historyRow.id}
+                      >
+                        {historyRow.onprogress === 1 ? (
+                          <IconCeklis w='20px' fillColor='green' />
+                        ) : (
+                          <IconCeklis w='20px' fillColor='silver' />
+                        )}
                       </TableCell>
                       <TableCell align='left'>{historyRow.name}</TableCell>
                       <TableCell align='center' width='30px'>

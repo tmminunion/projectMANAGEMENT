@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import { styled, useTheme } from '@mui/material/styles'
+import { Link } from '@mui/material'
 
 // Styled component for the triangle shaped background image
 const TriangleImg = styled('img')({
@@ -21,7 +22,7 @@ const TrophyImg = styled('img')({
   position: 'absolute'
 })
 
-const Trophy = () => {
+const Trophy = ({ total }) => {
   // ** Hook
   const theme = useTheme()
   const imageSrc = theme.palette.mode === 'light' ? 'triangle-light.png' : 'triangle-dark.png'
@@ -29,16 +30,18 @@ const Trophy = () => {
   return (
     <Card sx={{ position: 'relative' }}>
       <CardContent>
-        <Typography variant='h6'>Congratulations John! 🥳</Typography>
+        <Typography variant='h6'>Selamat Datang! 🥳</Typography>
         <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-          Best seller of the month
+          Project yang kamu punya
         </Typography>
-        <Typography variant='h5' sx={{ my: 4, color: 'primary.main' }}>
-          $42.8k
+        <Typography variant='h5' sx={{ my: 4, color: 'primary.main', alignContent: 'center' }}>
+          {total}
         </Typography>
-        <Button size='small' variant='contained'>
-          View Sales
-        </Button>
+        <Link href='/project'>
+          <Button size='small' variant='contained'>
+            Lihat Project
+          </Button>
+        </Link>
         <TriangleImg alt='triangle background' src={`/images/misc/${imageSrc}`} />
         <TrophyImg alt='trophy' src='/images/misc/trophy.png' />
       </CardContent>

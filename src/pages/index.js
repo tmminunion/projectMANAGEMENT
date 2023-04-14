@@ -27,12 +27,8 @@ export async function getServerSideProps(context) {
   const prisma = new PrismaClient()
 
   const projects = await prisma.project.findMany({
-    select: {
-      id: true,
-      name: true,
-      progress: true,
-      description: true,
-      startDate: true // include startDate in the select statement
+    include: {
+      Jobs: true
     }
   })
 
@@ -63,75 +59,112 @@ export async function getServerSideProps(context) {
     }
   })
 
+  const countJOB = await prisma.Job.count()
+
+  const countJOBselesai = await prisma.Job.count({
+    where: {
+      onprogress: 1
+    }
+  })
+
+  const counts = await prisma.Job.groupBy({
+    by: ['priority', 'onprogress'],
+    _count: {
+      priority: true,
+      onprogress: true
+    }
+  })
+
+  const countTask = await prisma.Task.count()
+  const countLog = await prisma.Catatan.count()
+  const countPost = await prisma.Post.count()
+
   return {
     props: {
       projects: JSON.parse(JSON.stringify(projects)),
       Catatan: JSON.parse(JSON.stringify(Catatan)),
       Jobbel: JSON.parse(JSON.stringify(Job)),
-      Jobfin: JSON.parse(JSON.stringify(Jobfin))
+      Jobfin: JSON.parse(JSON.stringify(Jobfin)),
+      countJOB: countJOB,
+      countTask: countTask,
+      countLog: countLog,
+      countPost: countPost,
+      countJOBselesai: countJOBselesai,
+      counts: counts
     }
   }
 }
 
-const Dashboard = ({ projects, Catatan, Jobbel, Jobfin }) => {
+const Dashboard = ({
+  projects,
+  Catatan,
+  Jobbel,
+  Jobfin,
+  countTask,
+  countJOB,
+  countLog,
+  countPost,
+  countJOBselesai,
+  counts
+}) => {
   const [Catatanx, SetCatatanx] = useState(Catatan)
+  const [Vanena, SetVanena] = useState(0)
 
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} md={4}>
-          <Trophy />
+          <Trophy total={projects.length} />
         </Grid>
         <Grid item xs={12} md={8}>
-          <StatisticsCard />
+          <StatisticsCard countJOB={countJOB} countTask={countTask} countLog={countLog} countPost={countPost} />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <WeeklyOverview />
+          <WeeklyOverview persen={((countJOBselesai / countJOB) * 100).toFixed(0)} />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
-          <TotalEarning />
+          <TotalEarning countJOBselesai={countJOBselesai} countJOB={countJOB} counts={counts} SetVanena={SetVanena} />
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
           <Grid container spacing={6}>
             <Grid item xs={6}>
               <CardStatisticsVerticalComponent
-                stats='$25.6k'
+                stats={`${((countJOBselesai / countJOB) * 100).toFixed(0)}%`}
                 icon={<Poll />}
                 color='success'
-                trendNumber='+42%'
-                title='Total Profit'
-                subtitle='Weekly Profit'
+                trendNumber={`-${100 - ((countJOBselesai / countJOB) * 100).toFixed(0)}%`}
+                title='Persentasi'
+                subtitle='Pencapaian'
+                trend='negative'
               />
             </Grid>
             <Grid item xs={6}>
               <CardStatisticsVerticalComponent
-                stats='$78'
-                title='Refunds'
+                stats={Vanena + '%'}
+                title='AvePriority'
                 trend='negative'
                 color='secondary'
-                trendNumber='-15%'
-                subtitle='Past Month'
+                trendNumber={`-${100 - Vanena}%`}
+                subtitle='Rata-rata'
                 icon={<CurrencyUsd />}
               />
             </Grid>
             <Grid item xs={6}>
               <CardStatisticsVerticalComponent
-                stats='862'
+                stats={`${(countJOBselesai / 3).toFixed(2)}`}
                 trend='negative'
-                trendNumber='-18%'
-                title='New Project'
-                subtitle='Yearly Project'
+                title='AveFinish'
+                subtitle='Priority Project'
                 icon={<BriefcaseVariantOutline />}
               />
             </Grid>
             <Grid item xs={6}>
               <CardStatisticsVerticalComponent
-                stats='15'
+                stats={(countJOB / countJOBselesai).toFixed(2)}
                 color='warning'
                 trend='negative'
-                trendNumber='-18%'
-                subtitle='Last Week'
-                title='Sales Queries'
+                subtitle='Oke Ratio '
+                title='Ratio'
                 icon={<HelpCircleOutline />}
               />
             </Grid>
