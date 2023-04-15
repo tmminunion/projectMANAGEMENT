@@ -7,7 +7,7 @@ export const priorityOptions = [
 ]
 
 export default function PriorityChip(props) {
-  const { val } = props
+  const { val, size } = props
 
   return (
     <>

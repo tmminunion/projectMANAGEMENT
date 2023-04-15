@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import CardMembership from 'src/views/cards/CardProjek'
+import CardMembership from 'src/views/cards/CardMembership'
 import DaftarJob from 'src/views/tables/DaftarJob'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -57,6 +57,7 @@ export async function getServerSideProps(context) {
     },
     include: {
       Catatan: true,
+      Jobs: true,
       Task: {
         include: {
           Job: true
@@ -85,11 +86,27 @@ const CardBasic = ({ projects }) => {
     setValuex(nedara)
   }
 
+  let onProgressCount = 0
+
+  projects.Jobs.forEach(job => {
+    if (job.onprogress === 1) {
+      onProgressCount++
+    }
+  })
+
   return (
     <>
       <Grid container spacing={6} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', mb: 5 }}>
         <Grid item xs={12} md={12}>
-          <CardMembership indek={projects.id} nama={projects.name} />
+          <CardMembership
+            indek={projects.id}
+            nama={projects.name}
+            desc={projects.description}
+            Jobs={projects.Jobs}
+            finish={onProgressCount}
+            tgl={projects.endDate}
+            Task={projects.Task}
+          />
         </Grid>
 
         <Grid item xs={12} md={12} spacing={6} sx={{ mb: 5 }}>
@@ -129,7 +146,14 @@ const CardBasic = ({ projects }) => {
             </TabList>
 
             <TabPanel sx={{ p: 5 }} value='0'>
-              <DaftarJob data={Task} setTask={setTask} setupdate={setupdate} update={update} valuex={valuex} />
+              <DaftarJob
+                data={Task}
+                setTask={setTask}
+                setupdate={setupdate}
+                update={update}
+                valuex={valuex}
+                setValuex={setValuex}
+              />
             </TabPanel>
             <TabPanel sx={{ p: 5 }} value='1'>
               <TabCatatan data={projects.Catatan} />

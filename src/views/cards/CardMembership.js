@@ -1,7 +1,7 @@
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
+import moment from 'moment'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
@@ -10,12 +10,16 @@ import CardContent from '@mui/material/CardContent'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 import Link from '@mui/material/Link'
+import { useState } from 'react'
+import Rating from '@mui/material/Rating'
+import StarIcon from '@mui/icons-material/Star'
 
 // ** Icons Imports
 import TrendingUp from 'mdi-material-ui/TrendingUp'
 import StarOutline from 'mdi-material-ui/StarOutline'
-import AccountOutline from 'mdi-material-ui/AccountOutline'
-import LockOpenOutline from 'mdi-material-ui/LockOpenOutline'
+import AccountOutline from 'mdi-material-ui/BriefcaseEdit'
+import LockOpenOutline from 'mdi-material-ui/BriefcaseUpload'
+import PriorityChip from 'src/@priority/Priority'
 
 // Styled Box component
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -23,9 +27,16 @@ const StyledBox = styled(Box)(({ theme }) => ({
     borderRight: `1px solid ${theme.palette.divider}`
   }
 }))
-const percentage = 66
 
-const CardMembership = ({ indek, nama, desc }) => {
+const CardMembership = ({ indek, nama, desc, Jobs, finish, nom, tgl, Task }) => {
+  const totalPriority = Jobs.reduce((acc, curr) => acc + curr.priority + 1, 0)
+  const dataprio = Math.ceil(totalPriority / Jobs.length) - 1
+  let color = 'info.main'
+  const fin = finish / Jobs.length
+  if (fin == 1) {
+    color = 'success.main'
+  }
+
   return (
     <Card>
       <Grid container spacing={6}>
@@ -33,43 +44,67 @@ const CardMembership = ({ indek, nama, desc }) => {
           item
           xs={12}
           sm={1}
-          sx={{ bgcolor: 'info.main', justifyContent: 'center', display: 'flex', alignItems: 'center' }}
+          sx={{ bgcolor: color, justifyContent: 'center', display: 'flex', alignItems: 'center' }}
         >
           <Typography variant='h3' sx={{ textAlign: 'center' }}>
-            {indek}
+            {nom}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={9}>
           <CardContent sx={{ padding: theme => `${theme.spacing(3.25, 5.75, 6.25)} !important` }}>
             <Link href={`/project/${indek}`}>
-              <Typography variant='h6' sx={{ marginBottom: 3.5 }}>
-                {nama}
-              </Typography>
+              <Typography variant='h6'>{nama}</Typography>
               <Typography variant='body2'>{desc}</Typography>
             </Link>
             <Divider sx={{ marginTop: 6.5, marginBottom: 6.75 }} />
             <Grid container spacing={4}>
-              <Grid item xs={12} sm={5}>
+              <Grid item xs={12} sm={2} sx={{ alignItems: 'center' }}>
                 <StyledBox>
-                  <Box sx={{ mb: 6.75, display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <PriorityChip val={dataprio} />
+                  </Box>{' '}
+                </StyledBox>
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <StyledBox>
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <LockOpenOutline sx={{ color: 'primary.main', marginRight: 2.75 }} fontSize='small' />
-                    <Typography variant='body2'>Full Access</Typography>
+                    <Typography variant='body2'>{Jobs.length} Tugas</Typography>
                   </Box>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <AccountOutline sx={{ color: 'primary.main', marginRight: 2.75 }} fontSize='small' />
-                    <Typography variant='body2'>15 Members</Typography>
+                    <Typography variant='body2'>{Task.length} Pekerjaan</Typography>
                   </Box>
                 </StyledBox>{' '}
               </Grid>
-              <Grid item xs={12} sm={7}>
-                <Box sx={{ mb: 6.75, display: 'flex', alignItems: 'center' }}>
+              <Grid item xs={12} sm={3}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <StarOutline sx={{ color: 'primary.main', marginRight: 2.75 }} fontSize='small' />
-                  <Typography variant='body2'>Access all Features</Typography>
+                  <Typography variant='body2'>{finish} Tugas Selesai</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <TrendingUp sx={{ color: 'primary.main', marginRight: 2.75 }} fontSize='small' />
-                  <Typography variant='body2'>Lifetime Free Update</Typography>
+                  <Typography variant='body2'>{moment(tgl).format('DD/MM/YYYY')}</Typography>
                 </Box>{' '}
+              </Grid>
+
+              <Grid item xs={12} sm={3}>
+                {' '}
+                <Box
+                  sx={{
+                    width: 200,
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
+                >
+                  <Rating
+                    name='text-feedback'
+                    value={(finish / Jobs.length) * 5}
+                    readOnly
+                    precision={0.5}
+                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize='inherit' />}
+                  />
+                </Box>
               </Grid>
             </Grid>{' '}
           </CardContent>{' '}
@@ -86,7 +121,10 @@ const CardMembership = ({ indek, nama, desc }) => {
             }}
           >
             <Box>
-              <CircularProgressbar value={percentage} text={`${percentage}%`} />
+              <CircularProgressbar
+                value={(finish / Jobs.length) * 100}
+                text={`${((finish / Jobs.length) * 100).toFixed(0)}%`}
+              />
             </Box>
           </CardContent>
         </Grid>

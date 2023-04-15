@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment, forwardRef } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import LinearProgress from '@mui/material/LinearProgress'
 import { EditText } from 'react-edit-text'
@@ -29,12 +29,42 @@ import IconHapus from 'src/@icon/IconHapus'
 
 const Row = props => {
   // ** Props
-  const { row, dodol, job, setupdate } = props
+  const { row, dodol, job, setupdate, setValuex } = props
   const router = useRouter()
   const { id } = router.query
   const [Tagex, settagex] = useState(0)
   const [open, setOpen] = useState(false)
   const [detailJOb, setdetailJOb] = useState(job)
+
+  const totalPriority = job.reduce((acc, curr) => acc + curr.priority + 1, 0)
+  let dataprio = 0
+  if (Array.isArray(job) && job.length > 0) {
+    dataprio = Math.ceil(totalPriority / job.length) - 1
+  } else {
+    dataprio = 0
+  }
+  let onProgressCount = 0
+
+  job.forEach(job => {
+    if (job.onprogress === 1) {
+      onProgressCount++
+    }
+  })
+  const [progressValue, setProgressValue] = useState((onProgressCount / job.Length) * 100)
+
+  let progressBarColor = 'error'
+  if (progressValue < 33) {
+    progressBarColor = 'error'
+  } else if (progressValue >= 33 && progressValue < 67) {
+    progressBarColor = 'secondary'
+  } else {
+    progressBarColor = 'primary'
+  }
+
+  let waerebgcolor = '#F9F9F9'
+  if (progressValue == 100) {
+    waerebgcolor = 'grey'
+  }
 
   const handleChangex = event => {
     settagex(event.target.value)
@@ -67,6 +97,7 @@ const Row = props => {
     const data = await res.json()
     if (res.status === 201) {
       setupdate(true)
+      setValuex(0)
       setdetailJOb([
         ...detailJOb, // that contains all the old items
         data
@@ -105,7 +136,10 @@ const Row = props => {
 
   return (
     <Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }} bgcolor='#F9F9F9'>
+      <TableRow
+        sx={{ '& > *': { borderBottom: 'unset' } }}
+        bgcolor={onProgressCount / row.Job.length == 1 ? ' #e3ffca' : '#F9F9F9'}
+      >
         <TableCell>
           <IconButton aria-label='expand row' size='small' onClick={() => setOpen(!open)}>
             {open ? <ChevronUp /> : <ChevronDown />}
@@ -113,11 +147,15 @@ const Row = props => {
         </TableCell>
         <TableCell>{dodol + 1}</TableCell>
         <TableCell component='th' scope='row'>
-          {row.name}
+          {onProgressCount / row.Job.length === 1 ? (
+            <span style={{ textDecoration: 'line-through' }}> {row.name}</span>
+          ) : (
+            <span> {row.name}</span>
+          )}
         </TableCell>
         <TableCell align='center'>{row.Job.length}</TableCell>
         <TableCell align='center'>
-          <PriorityChip val={row.priority} />
+          <PriorityChip val={dataprio} />
         </TableCell>
         <TableCell width='40px' align='center'>
           <EditText value={moment(row.endDate).format('DD/mm/yyyy')} name={11} onSave={editdata} />
@@ -125,17 +163,17 @@ const Row = props => {
 
         <TableCell align='center'>
           <LinearProgress
-            color='primary'
-            value={Math.floor(Math.random() * 100)}
+            color={progressBarColor}
+            value={(onProgressCount / row.Job.length) * 100}
             variant='determinate'
             style={{ height: 17 }}
           />
         </TableCell>
         <TableCell align='center' width={'10px'}>
-          100%
+          {((onProgressCount / row.Job.length) * 100).toFixed(0)}%
         </TableCell>
         <TableCell align='center'>
-          <ProgressChip val={row.progress} />
+          {onProgressCount / row.Job.length == 1 ? <ProgressChip val={4} /> : <ProgressChip val={row.progress} />}
         </TableCell>
       </TableRow>
       <TableRow>
@@ -159,7 +197,13 @@ const Row = props => {
                           <IconCeklis w='20px' fillColor='silver' />
                         )}
                       </TableCell>
-                      <TableCell align='left'>{historyRow.name}</TableCell>
+                      <TableCell align='left'>
+                        {historyRow.onprogress === 1 ? (
+                          <span style={{ textDecoration: 'line-through' }}>{historyRow.name}</span>
+                        ) : (
+                          <span>{historyRow.name}</span>
+                        )}
+                      </TableCell>
                       <TableCell align='center' width='30px'>
                         <PriorityChip val={historyRow.priority} />
                       </TableCell>
@@ -204,7 +248,7 @@ const Row = props => {
   )
 }
 
-const DaftarJob = ({ data, setTask, update, setupdate, valuex }) => {
+const DaftarJob = ({ data, setTask, update, setupdate, valuex, setValuex }) => {
   const router = useRouter()
   const [Tage, settage] = useState(0)
   const { id } = router.query
@@ -279,7 +323,7 @@ const DaftarJob = ({ data, setTask, update, setupdate, valuex }) => {
         </TableHead>
         <TableBody>
           {data.map((row, i) => (
-            <Row key={i} row={row} job={row.Job} dodol={i} setupdate={setupdate} />
+            <Row key={i} row={row} job={row.Job} dodol={i} setupdate={setupdate} setValuex={setValuex} />
           ))}
 
           <TableRow sx={{ '& > *': { borderBottom: 'unset' } }} bgcolor='F9F9F9'>
@@ -290,7 +334,7 @@ const DaftarJob = ({ data, setTask, update, setupdate, valuex }) => {
               <EditText placeholder='Tambah Pekerjaan' name={11} onSave={record} />
             </TableCell>{' '}
             <TableCell align='center'>
-              <FormControl>
+              {/* <FormControl>
                 <Select value={Tage} onChange={handleChange} renderValue={value => <PriorityChip val={value} />}>
                   {priorityOptions.map((name, i) => (
                     <MenuItem value={i} key={i}>
@@ -298,7 +342,7 @@ const DaftarJob = ({ data, setTask, update, setupdate, valuex }) => {
                     </MenuItem>
                   ))}
                 </Select>
-              </FormControl>
+              </FormControl> */}
             </TableCell>
             <TableCell align='center'></TableCell>
             <TableCell align='center' colSpan={3}></TableCell>

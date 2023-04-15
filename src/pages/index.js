@@ -3,8 +3,8 @@ import Grid from '@mui/material/Grid'
 import { PrismaClient } from '@prisma/client'
 
 import Poll from 'mdi-material-ui/Poll'
-import CurrencyUsd from 'mdi-material-ui/CurrencyUsd'
-import HelpCircleOutline from 'mdi-material-ui/HelpCircleOutline'
+import CurrencyUsd from 'mdi-material-ui/BagChecked'
+import HelpCircleOutline from 'mdi-material-ui/Ballot'
 import BriefcaseVariantOutline from 'mdi-material-ui/BriefcaseVariantOutline'
 
 // ** Custom Components Imports

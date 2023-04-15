@@ -55,7 +55,12 @@ const DashboardTable = ({ projects }) => {
           </TableHead>
           <TableBody>
             {projects.map((row, i) => (
-              <TableRow hover key={row.name} sx={{ '&:last-of-type td, &:last-of-type th': { border: 0 } }}>
+              <TableRow
+                hover
+                key={row.name}
+                sx={{ '&:last-of-type td, &:last-of-type th': { border: 0 } }}
+                bgcolor={countOnProgress(row.id) / row.Jobs.length == 1 ? ' #e3ffca' : '#F9F9F9'}
+              >
                 <TableCell>{i + 1}</TableCell>
                 <TableCell sx={{ py: theme => `${theme.spacing(0.5)} !important` }}>
                   <Link href={`project/${row.id}`}>

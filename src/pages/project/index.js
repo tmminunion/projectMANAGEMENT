@@ -26,22 +26,15 @@ export async function getServerSideProps(context) {
   const prisma = new PrismaClient()
 
   const projects = await prisma.project.findMany({
-    select: {
-      id: true,
-      name: true,
-      description: true,
-      startDate: true // include startDate in the select statement
+    include: {
+      Jobs: true,
+      Task: true
     }
   })
 
-  const serializedProjects = projects.map(project => ({
-    ...project,
-    startDate: project.startDate.toISOString() // convert Date to ISO string
-  }))
-
   return {
     props: {
-      projects: serializedProjects
+      projects: JSON.parse(JSON.stringify(projects))
     }
   }
 }
@@ -51,6 +44,24 @@ const CardBasic = ({ projects }) => {
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
+  function countOnProgress(projectId) {
+    const project = projects.find(project => project.id === projectId)
+
+    if (!project) {
+      throw new Error(`Project with ID ${projectId} not found`)
+    }
+
+    let onProgressCount = 0
+
+    project.Jobs.forEach(job => {
+      if (job.onprogress === 1) {
+        onProgressCount++
+      }
+    })
+
+    return onProgressCount
+  }
+
   return (
     <>
       <Grid container spacing={6} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', mb: 5 }}>
@@ -59,7 +70,16 @@ const CardBasic = ({ projects }) => {
         </Grid>
         {projects.map((project, i) => (
           <Grid item xs={12} md={12} key={i}>
-            <CardMembership indek={project.id} nama={project.name} desc={project.description} />
+            <CardMembership
+              indek={project.id}
+              nom={i + 1}
+              nama={project.name}
+              desc={project.description}
+              Jobs={project.Jobs}
+              finish={countOnProgress(project.id)}
+              tgl={project.endDate}
+              Task={project.Task}
+            />
           </Grid>
         ))}
         <Grid item xs={12} md={12}>

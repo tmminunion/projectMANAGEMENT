@@ -9,11 +9,11 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
 // ** Icons Imports
-import TrendingUp from 'mdi-material-ui/TrendingUp'
-import CurrencyUsd from 'mdi-material-ui/CurrencyUsd'
-import DotsVertical from 'mdi-material-ui/DotsVertical'
-import CellphoneLink from 'mdi-material-ui/CellphoneLink'
-import AccountOutline from 'mdi-material-ui/AccountOutline'
+import TrendingUp from 'mdi-material-ui/BriefcaseEdit'
+import CurrencyUsd from 'mdi-material-ui/BriefcaseVariantOutline'
+
+import CellphoneLink from 'mdi-material-ui/BriefcaseEye'
+import AccountOutline from 'mdi-material-ui/BriefcaseUpload'
 
 const salesData = [
   {
