@@ -8,6 +8,24 @@ export const priorityOptions = [
 
 export default function PriorityChip(props) {
   const { val, size } = props
+  console.log(val)
+
+  if (isNaN(val)) {
+    return (
+      <>
+        <Chip
+          label='none'
+          color='default'
+          sx={{
+            height: 20,
+            fontSize: '0.75rem',
+            textTransform: 'capitalize',
+            fontWeight: 300
+          }}
+        />
+      </>
+    )
+  }
 
   return (
     <>

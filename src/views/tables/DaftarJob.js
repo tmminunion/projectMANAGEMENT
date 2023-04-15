@@ -164,13 +164,13 @@ const Row = props => {
         <TableCell align='center'>
           <LinearProgress
             color={progressBarColor}
-            value={(onProgressCount / row.Job.length) * 100}
+            value={row.Job.length ? (onProgressCount / row.Job.length) * 100 : 0}
             variant='determinate'
             style={{ height: 17 }}
           />
         </TableCell>
         <TableCell align='center' width={'10px'}>
-          {((onProgressCount / row.Job.length) * 100).toFixed(0)}%
+          {row.Job.length ? ((onProgressCount / row.Job.length) * 100).toFixed(0) : '0'}%
         </TableCell>
         <TableCell align='center'>
           {onProgressCount / row.Job.length == 1 ? <ProgressChip val={4} /> : <ProgressChip val={row.progress} />}

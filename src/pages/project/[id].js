@@ -10,13 +10,13 @@ import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
 import { styled } from '@mui/material/styles'
 import MuiTab from '@mui/material/Tab'
+import TimelinePage from 'src/views/timeline/TimeLine'
 
-// ** Icons Imports
-
-import LockOpenOutline from 'mdi-material-ui/LockOpenOutline'
 import InformationOutline from 'mdi-material-ui/InformationOutline'
 import IconList from 'src/@icon/IconList'
 import IconCatatan from 'src/@icon/IconCatatan'
+import IconCalender from 'src/@icon/IconCalender'
+import IconDiskusi from 'src/@icon/IconDiskusi'
 
 // ** Demo Tabs Imports
 import TabInfo from 'src/views/account-settings/TabInfo'
@@ -138,7 +138,16 @@ const CardBasic = ({ projects }) => {
                 value='2'
                 label={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <InformationOutline />
+                    <IconCalender w='25' />
+                    <TabName>TIMELINE</TabName>
+                  </Box>
+                }
+              />{' '}
+              <Tab
+                value='3'
+                label={
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <IconDiskusi w='25' />
                     <TabName>DISKUSI</TabName>
                   </Box>
                 }
@@ -159,6 +168,9 @@ const CardBasic = ({ projects }) => {
               <TabCatatan data={projects.Catatan} />
             </TabPanel>
             <TabPanel sx={{ p: 5 }} value='2'>
+              <TimelinePage tasks={projects.Task} Jobs={projects.Jobs} />
+            </TabPanel>
+            <TabPanel sx={{ p: 5 }} value='3'>
               <TabInfo />
             </TabPanel>
           </TabContext>

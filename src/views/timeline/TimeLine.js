@@ -10,12 +10,12 @@ import 'react-calendar-timeline/lib/Timeline.css'
 import moment from 'moment'
 
 import Grid from '@mui/material/Grid'
-
+import Card from '@mui/material/Card'
+import Link from '@mui/material/Link'
+import Button from '@mui/material/Button'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
 
 const TimelinePage = ({ tasks, Jobs }) => {
   let lastEndTime = moment()
@@ -37,7 +37,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
       // data onprogress tidak 0 dimulai dari tanggal awal dan ke belakang
       endTime = moment(today).subtract(Math.max(0, today.diff(lastEndTime2, 'days')), 'days')
       startTime = moment(endTime).subtract(multiplier, 'days')
-      lastEndTime2 = moment(startTime + 2)
+      lastEndTime2 = moment(startTime)
     }
 
     let backgroundColor = 'fuchsia'
@@ -90,89 +90,74 @@ const TimelinePage = ({ tasks, Jobs }) => {
           <Typography variant='h5'>TIMELINE PROJECT</Typography>
           <Typography variant='body2'>Planing Waktu Kerja Project </Typography>
         </Grid>
-        <Grid item xs={12}>
-          <Timeline
-            groups={groups}
-            items={items}
-            defaultTimeStart={moment().add(0, 'day')}
-            defaultTimeEnd={moment().add(30, 'day')}
-            headerLabelFormats={{ year: 'YYYY', month: 'MMMM' }}
-            headerBackgroundColor='blue'
-            style={{ height, width: '100%' }} // set tinggi halaman
-            itemHeight={itemHeight} // set tinggi item
-            fixedHeader='fixed'
-            sidebarWidth={250}
-          >
-            <TimelineMarkers>
-              <TodayMarker>
-                {({ styles, date }) => {
-                  const customStyles = {
-                    ...styles,
-                    backgroundColor: 'blue',
-                    width: '10px'
-                  }
+        <Timeline
+          groups={groups}
+          items={items}
+          defaultTimeStart={moment().add(0, 'day')}
+          defaultTimeEnd={moment().add(30, 'day')}
+          headerLabelFormats={{ year: 'YYYY', month: 'MMMM' }}
+          style={{ height, width: '100%' }} // set tinggi halaman
+          itemHeight={itemHeight} // set tinggi item
+          fixedHeader='fixed'
+          sidebarWidth={250}
+        >
+          <TimelineMarkers>
+            <TodayMarker>
+              {({ styles, date }) => {
+                const customStyles = {
+                  ...styles,
+                  backgroundColor: 'green',
+                  width: '7px'
+                }
 
-                  return <div style={customStyles} onClick={undefined} />
-                }}
-              </TodayMarker>
+                return <div style={customStyles} onClick={undefined} />
+              }}
+            </TodayMarker>
 
-              <CustomMarker date={lastEndTime}>
-                {({ styles, date }) => {
-                  const customStyles = {
-                    ...styles,
-                    backgroundColor: 'red',
-                    width: '10px'
-                  }
+            <CustomMarker date={lastEndTime}>
+              {({ styles, date }) => {
+                const customStyles = {
+                  ...styles,
+                  backgroundColor: 'deeppink',
+                  width: '7px'
+                }
 
-                  return <div style={customStyles} onClick={undefined} />
-                }}
-              </CustomMarker>
-              <CustomMarker date={lastEndTime2}>
-                {({ styles, date }) => {
-                  const customStyles = {
-                    ...styles,
-                    backgroundColor: 'Black',
-                    width: '7px'
-                  }
+                return <div style={customStyles} onClick={undefined} />
+              }}
+            </CustomMarker>
+            <CustomMarker date={lastEndTime2}>
+              {({ styles, date }) => {
+                const customStyles = {
+                  ...styles,
+                  backgroundColor: 'Black',
+                  width: '7px'
+                }
 
-                  return <div style={customStyles} onClick={undefined} />
-                }}
-              </CustomMarker>
-            </TimelineMarkers>
-            <TimelineHeaders>
-              <SidebarHeader>
-                {() => {
-                  const customStylese = {
-                    backgroundColor: '#1a237e',
-                    width: '250px',
-                    color: 'white',
-                    align: 'center',
-                    padding: '3px'
-                  }
+                return <div style={customStyles} onClick={undefined} />
+              }}
+            </CustomMarker>
+          </TimelineMarkers>
+          <TimelineHeaders>
+            <SidebarHeader>
+              {() => {
+                const customStylese = {
+                  backgroundColor: '#1a237e',
+                  width: '250px',
+                  color: 'white',
+                  align: 'center',
+                  padding: '3px'
+                }
 
-                  return <div style={customStylese}>Pekerjaan</div>
-                }}
-              </SidebarHeader>
-              <DateHeader unit='primaryHeader' style={{ backgroundColor: '#1a237e' }} />
-              <DateHeader />
-            </TimelineHeaders>
-          </Timeline>{' '}
-        </Grid>
+                return <div style={customStylese}>Pekerjaan</div>
+              }}
+            </SidebarHeader>
+            <DateHeader unit='primaryHeader' style={{ backgroundColor: '#1a237e' }} />
+            <DateHeader />
+          </TimelineHeaders>
+        </Timeline>{' '}
       </Grid>
     </>
   )
 }
 
 export default TimelinePage
-
-export async function getServerSideProps() {
-  const tasks = await prisma.Task.findMany()
-  const Jobs = await prisma.Job.findMany()
-
-  return {
-    props: {
-      tasks: JSON.parse(JSON.stringify(tasks)),
-      Jobs: JSON.parse(JSON.stringify(Jobs))
-    }
-  }
-}

@@ -122,8 +122,8 @@ const CardMembership = ({ indek, nama, desc, Jobs, finish, nom, tgl, Task }) => 
           >
             <Box>
               <CircularProgressbar
-                value={(finish / Jobs.length) * 100}
-                text={`${((finish / Jobs.length) * 100).toFixed(0)}%`}
+                value={Jobs.length ? (finish / Jobs.length) * 100 : 0}
+                text={Jobs.length ? `${((finish / Jobs.length) * 100).toFixed(0)}%` : '0%'}
               />
             </Box>
           </CardContent>

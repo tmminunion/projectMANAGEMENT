@@ -17,11 +17,7 @@ const navigation = () => {
       icon: HomeOutline,
       path: '/'
     },
-    {
-      title: 'Timeline',
-      icon: BookOutline,
-      path: '/timeline'
-    },
+
     {
       sectionTitle: 'Project'
     },
@@ -29,6 +25,11 @@ const navigation = () => {
       title: 'Project',
       icon: BookOutline,
       path: '/project'
+    },
+    {
+      title: 'Timeline',
+      icon: BookOutline,
+      path: '/timeline'
     },
     {
       title: 'Tugas',

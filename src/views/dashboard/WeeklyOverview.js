@@ -37,17 +37,17 @@ const WeeklyOverview = ({ persen }) => {
     plotOptions: {
       radialBar: {
         hollow: {
-          margin: 0,
-          size: '50%',
+          margin: 10,
+          size: '60%',
           background: colorfin
         },
         track: {
           dropShadow: {
             enabled: true,
-            top: 0,
-            left: 0,
-            blur: 4,
-            opacity: 0.75
+            top: 2,
+            left: 2,
+            blur: 9,
+            opacity: 0.65
           }
         },
         dataLabels: {
@@ -57,9 +57,10 @@ const WeeklyOverview = ({ persen }) => {
             fontSize: '1px'
           },
           value: {
-            color: 'gold',
-            fontSize: '50px',
-            show: false
+            color: '#1E88E5',
+            fontSize: '60px',
+            show: true,
+            offsetY: 4
           }
         }
       }
@@ -67,27 +68,13 @@ const WeeklyOverview = ({ persen }) => {
     fill: {
       type: 'solid',
       colors: ['#9155fd'] // Tiga warna yang berbeda
-    },
-
-    labels: ['']
+    }
   }
 
   return (
     <Card>
-      <CardHeader
-        title='Pencapaian'
-        titleTypographyProps={{
-          sx: { lineHeight: '2rem !important', letterSpacing: '0.15px !important' }
-        }}
-      />
       <CardContent sx={{ '& .apexcharts-xcrosshairs.apexcharts-active': { opacity: 0 } }}>
-        <ReactApexcharts type='radialBar' height={265} options={options} series={[persen]} />
-        <Box sx={{ mb: 7, display: 'flex', alignItems: 'center' }}>
-          <Typography variant='h5' sx={{ mr: 4 }}>
-            {persen}%
-          </Typography>
-          <Typography variant='body2'>Pencapaian Tugas yang telah diselesaikan secara Total {persen}%</Typography>
-        </Box>
+        <ReactApexcharts type='radialBar' height={385} options={options} series={[persen]} />
       </CardContent>
     </Card>
   )

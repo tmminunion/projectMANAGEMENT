@@ -72,13 +72,15 @@ const DashboardTable = ({ projects }) => {
                 </TableCell>
                 <TableCell sx={{ width: '40%' }}>
                   <LinearProgress
-                    value={row && row.Jobs ? ((countOnProgress(row.id) / row.Jobs.length) * 100).toFixed(0) : 0}
+                    value={row.Jobs.length ? ((countOnProgress(row.id) / row.Jobs.length) * 100).toFixed(0) : 0}
                     variant='determinate'
                     style={{ height: 17 }}
                     color='primary'
                   />
                 </TableCell>
-                <TableCell align='center'>{((countOnProgress(row.id) / row.Jobs.length) * 100).toFixed(0)}%</TableCell>
+                <TableCell align='center'>
+                  {row.Jobs.length ? ((countOnProgress(row.id) / row.Jobs.length) * 100).toFixed(0) : 0}%
+                </TableCell>
                 <TableCell align='center'>
                   {(countOnProgress(row.id) / row.Jobs.length) * 100 == 100 ? (
                     <ProgressChip val={4} />

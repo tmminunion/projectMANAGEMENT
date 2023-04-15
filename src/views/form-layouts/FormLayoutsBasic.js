@@ -61,6 +61,7 @@ const FormLayoutsBasic = () => {
                 label='Nama Project'
                 placeholder='Masukan Nama Project'
                 onChange={e => setNamaAcara(e.target.value)}
+                autoComplete='new-password'
               />
             </Grid>
             <Grid item xs={12}>
@@ -70,6 +71,9 @@ const FormLayoutsBasic = () => {
                 label='Keterangan'
                 placeholder='Description Project'
                 onChange={e => setValues(e.target.value)}
+                inputProps={{
+                  autoComplete: 'off'
+                }}
               />
             </Grid>
 
