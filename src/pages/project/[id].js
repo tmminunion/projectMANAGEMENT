@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
-import CardMembership from 'src/views/cards/CardMembership'
+
+import CardMembership from 'src/views/cards/UseCardMembership'
 import DaftarJob from 'src/views/tables/DaftarJob'
 import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
+
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import TabContext from '@mui/lab/TabContext'
@@ -12,16 +12,15 @@ import { styled } from '@mui/material/styles'
 import MuiTab from '@mui/material/Tab'
 import TimelinePage from 'src/views/timeline/TimeLine'
 
-import InformationOutline from 'mdi-material-ui/InformationOutline'
 import IconList from 'src/@icon/IconList'
 import IconCatatan from 'src/@icon/IconCatatan'
 import IconCalender from 'src/@icon/IconCalender'
 import IconDiskusi from 'src/@icon/IconDiskusi'
 
 // ** Demo Tabs Imports
-import TabInfo from 'src/views/account-settings/TabInfo'
+import TabInfo from 'src/views/Tabna/UseTabInfo'
 
-import TabCatatan from 'src/views/account-settings/TabCatatan'
+import TabCatatan from 'src/views/Tabna/TabCatatan'
 
 // ** Third Party Styles Imports
 import 'react-datepicker/dist/react-datepicker.css'
@@ -58,6 +57,7 @@ export async function getServerSideProps(context) {
     include: {
       Catatan: true,
       Jobs: true,
+      Post: true,
       Task: {
         include: {
           Job: true
@@ -79,6 +79,7 @@ const CardBasic = ({ projects }) => {
 
   const [Task, setTask] = useState(projects.Task)
   const [update, setupdate] = useState(false)
+  const [post, setpost] = useState(projects.Post)
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -129,31 +130,30 @@ const CardBasic = ({ projects }) => {
                 value='1'
                 label={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconCatatan w='25px' />
-                    <TabName>CATATAN</TabName>
-                  </Box>
-                }
-              />
-              <Tab
-                value='2'
-                label={
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <IconCalender w='25' />
                     <TabName>TIMELINE</TabName>
                   </Box>
                 }
               />{' '}
               <Tab
+                value='2'
+                label={
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <IconCatatan w='25px' />
+                    <TabName>CATATAN</TabName>
+                  </Box>
+                }
+              />
+              <Tab
                 value='3'
                 label={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <IconDiskusi w='25' />
-                    <TabName>DISKUSI</TabName>
+                    <TabName>DISKUSI ({post.length})</TabName>
                   </Box>
                 }
               />
             </TabList>
-
             <TabPanel sx={{ p: 5 }} value='0'>
               <DaftarJob
                 data={Task}
@@ -163,15 +163,15 @@ const CardBasic = ({ projects }) => {
                 valuex={valuex}
                 setValuex={setValuex}
               />
-            </TabPanel>
+            </TabPanel>{' '}
             <TabPanel sx={{ p: 5 }} value='1'>
-              <TabCatatan data={projects.Catatan} />
+              <TimelinePage tasks={projects.Task} Jobs={projects.Jobs} update={update} />
             </TabPanel>
             <TabPanel sx={{ p: 5 }} value='2'>
-              <TimelinePage tasks={projects.Task} Jobs={projects.Jobs} />
+              <TabCatatan data={projects.Catatan} />
             </TabPanel>
             <TabPanel sx={{ p: 5 }} value='3'>
-              <TabInfo />
+              <TabInfo pid={projects.id} post={post} setpost={setpost} />
             </TabPanel>
           </TabContext>
         </Grid>

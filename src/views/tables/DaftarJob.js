@@ -288,10 +288,6 @@ const DaftarJob = ({ data, setTask, update, setupdate, valuex, setValuex }) => {
         ...data, // that contains all the old items
         datanew
       ])
-      const input = document.querySelector(`input[name="${name}"]`)
-      if (input) {
-        input.value = ''
-      }
     } else {
       console.log('eroro')
     }

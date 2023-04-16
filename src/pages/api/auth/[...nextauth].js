@@ -10,7 +10,11 @@ export default NextAuth({
   providers: [
     CredentialsProvider({
       name: 'Credentials',
-      credentials: {},
+      credentials: {
+        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+        noreg: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+        password: { label: 'Password', type: 'password' }
+      },
       async authorize(credentials, req) {
         try {
           const response = await axios.post(process.env.LINK_LOGIN, credentials)
@@ -21,7 +25,8 @@ export default NextAuth({
               name: user.data.nama,
               noreg: user.data.noreg,
               email: user.data.noreg,
-              token: user.data.token
+              token: user.data.token,
+              role: 'user'
             }
           } else {
             // Jika response status code bukan OK (tidak 200), login gagal
@@ -39,19 +44,23 @@ export default NextAuth({
   pages: {
     // signIn: '/auth/signin',
     signOut: '/auth/signout',
-    error: '/pages/login?error=', // Error code passed in query string as ?error=
+    error: '?error=', // Error code passed in query string as ?error=
     verifyRequest: '/auth/verify-request', // (used for check email message)
     newUser: '/auth/new-user' // New users wil
   },
   callbacks: {
-    jwt(params) {
-      // update token
-      if (params.user?.role) {
-        params.token.role = params.user.role
+    async session({ session, token }) {
+      return {
+        ...session,
+        token
+      }
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        return user
       }
 
-      // return final_token
-      return params.token
+      return token
     }
   },
   secret: process.env.JWT_SECRET

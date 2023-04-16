@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import { styled, useTheme } from '@mui/material/styles'
 import { Link } from '@mui/material'
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 // Styled component for the triangle shaped background image
 const TriangleImg = styled('img')({
@@ -26,16 +27,17 @@ const Trophy = ({ total }) => {
   // ** Hook
   const theme = useTheme()
   const imageSrc = theme.palette.mode === 'light' ? 'triangle-light.png' : 'triangle-dark.png'
+  const { userNama } = useSettings()
 
   return (
     <Card sx={{ position: 'relative' }}>
       <CardContent>
         <Typography variant='h6'>Selamat Datang! 🥳</Typography>
         <Typography variant='body2' sx={{ letterSpacing: '0.25px' }}>
-          Project yang kamu punya
+          {userNama}
         </Typography>
         <Typography variant='h5' sx={{ my: 4, color: 'primary.main', alignContent: 'center' }}>
-          {total}
+          Projects : {total}
         </Typography>
         <Link href='/project'>
           <Button size='small' variant='contained'>

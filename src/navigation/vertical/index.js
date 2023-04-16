@@ -30,11 +30,6 @@ const navigation = () => {
       title: 'Timeline',
       icon: BookOutline,
       path: '/timeline'
-    },
-    {
-      title: 'Tugas',
-      icon: BookOutline,
-      path: '/tugas'
     }
   ]
 }

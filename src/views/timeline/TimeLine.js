@@ -17,9 +17,13 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
-const TimelinePage = ({ tasks, Jobs }) => {
+const TimelinePage = ({ tasks, Jobs, update }) => {
   let lastEndTime = moment()
   let lastEndTime2 = moment()
+
+  if (update) {
+    router.reload()
+  }
 
   const today = moment().startOf('day')
 
