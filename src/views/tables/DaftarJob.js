@@ -107,7 +107,7 @@ const Row = props => {
     }
   }
 
-  const completeTask = async idx => {
+  const completeTask = async (idx, prio) => {
     const updatedRows = detailJOb.map(historyRow => {
       if (historyRow.id === idx) {
         historyRow.onprogress = 1
@@ -118,6 +118,12 @@ const Row = props => {
     })
     setdetailJOb(updatedRows)
 
+    const date = new Date()
+    date.setDate(date.getDate() - (prio + 1))
+    const startDate = date.toISOString()
+    const nowdate = new Date()
+    const endDate = nowdate.toISOString()
+
     const res = await fetch('/api/db/job/update', {
       method: 'POST',
       headers: {
@@ -127,6 +133,8 @@ const Row = props => {
         id: idx,
         progress: 4,
         onprogress: 1,
+        endDate,
+        startDate,
         projectId: parseInt(id)
       })
     })
@@ -158,7 +166,7 @@ const Row = props => {
           <PriorityChip val={dataprio} />
         </TableCell>
         <TableCell width='40px' align='center'>
-          <EditText value={moment(row.endDate).format('DD/mm/yyyy')} name={11} onSave={editdata} />
+          <EditText value={moment(row.endDate).format('DD/MM/yyyy')} name={11} onSave={editdata} />
         </TableCell>
 
         <TableCell align='center'>
@@ -188,7 +196,7 @@ const Row = props => {
                       <TableCell width={'30px'}>{i + 1}</TableCell>
                       <TableCell
                         width={'30px'}
-                        onClick={() => completeTask(historyRow.id)}
+                        onClick={() => completeTask(historyRow.id, historyRow.priority)}
                         id={'Cell_' + historyRow.id}
                       >
                         {historyRow.onprogress === 1 ? (

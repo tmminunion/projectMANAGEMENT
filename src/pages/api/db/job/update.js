@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' })
   }
 
-  const { id, name, progress, onprogress, projectId } = req.body
+  const { id, endDate, startDate, progress, onprogress, projectId } = req.body
 
   const job = await prisma.Job.update({
     where: {
@@ -15,6 +15,8 @@ export default async function handler(req, res) {
     },
     data: {
       progress,
+      endDate,
+      startDate,
       onprogress
     }
   })

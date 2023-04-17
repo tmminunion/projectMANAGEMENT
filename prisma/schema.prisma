@@ -53,6 +53,8 @@ model Job {
   description String?
   status      Int      @default(0)
   statustask  Int      @default(0)
+  startDate   DateTime @default(now())
+  endDate     DateTime @default(now())
   progress    Int      @default(0)
   onprogress  Int      @default(0)
   priority    Int      @default(0)

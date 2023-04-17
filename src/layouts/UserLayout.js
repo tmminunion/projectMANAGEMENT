@@ -2,6 +2,7 @@
 import { useEffect } from 'react'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useSession } from 'next-auth/react'
+import Router from 'next/router'
 
 // !Do not remove this Layout import
 import VerticalLayout from 'src/@core/layouts/VerticalLayout'

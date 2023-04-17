@@ -8,14 +8,13 @@ import Timeline, {
 } from 'react-calendar-timeline'
 import 'react-calendar-timeline/lib/Timeline.css'
 import moment from 'moment'
-
+import { postData } from 'src/@api/axios'
 import Grid from '@mui/material/Grid'
 
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { useState, useEffect } from 'react'
 
 const TimelinePage = ({ tasks, Jobs }) => {
   let lastEndTime = moment()
@@ -27,17 +26,23 @@ const TimelinePage = ({ tasks, Jobs }) => {
     const multiplier = task.priority === 0 ? 1 : task.priority === 1 ? 2 : 3
     let startTime
     let endTime
+    let canMove = true
+    let canResize = true
 
-    if (task.onprogress === 0) {
-      // data onprogress 0 dimulai dari hari ini dan ke depan
+    if (task.onprogress === 1) {
+      canMove = false
+      canResize = false
+    }
+
+    if (task.onprogress === 1 || task.statustask === 1) {
+      // data onprogress tidak 0 dimulai dari tanggal awal dan ke belakang
+      endTime = moment(task.endDate)
+      startTime = moment(task.startDate)
+      lastEndTime2 = moment(endTime)
+    } else {
       startTime = moment().add(Math.max(0, lastEndTime.diff(moment(), 'days')), 'days')
       endTime = moment(startTime).add(1 + multiplier, 'days')
       lastEndTime = moment(endTime)
-    } else {
-      // data onprogress tidak 0 dimulai dari tanggal awal dan ke belakang
-      endTime = moment(today).subtract(Math.max(0, today.diff(lastEndTime2, 'days')), 'days')
-      startTime = moment(endTime).subtract(multiplier, 'days')
-      lastEndTime2 = moment(startTime + 2)
     }
 
     let backgroundColor = 'fuchsia'
@@ -61,8 +66,8 @@ const TimelinePage = ({ tasks, Jobs }) => {
       title: task.name,
       start_time: startTime,
       end_time: endTime,
-      canMove: true,
-      canResize: true,
+      canMove: canMove,
+      canResize: canResize,
 
       itemProps: {
         onDoubleClick: () => {
@@ -73,15 +78,89 @@ const TimelinePage = ({ tasks, Jobs }) => {
     }
   })
 
+  const [itemlist, setitemlist] = useState(items)
+  const [lasttime, setlastime] = useState(lastEndTime)
+
   const groups = tasks.map(task => ({
     id: task.id,
     title: task.name,
-    stackItems: false,
-    width: 50
+    stackItems: true
   }))
 
   const itemHeight = 30 // set tinggi item
   const height = groups.length * itemHeight + 100 // hitung tinggi halaman
+
+  const handleItemMove = async (itemId, dragTime, newGroupOrder) => {
+    // mencari item yang sesuai dengan itemId
+    const itemIndex = itemlist.findIndex(item => item.id === itemId)
+    const item = itemlist[itemIndex]
+
+    // menghitung waktu mulai dan selesai yang baru
+    const newStartTime = moment(dragTime)
+    const newEndTime = moment(dragTime) + (item.end_time - item.start_time)
+
+    // mengupdate waktu mulai dan selesai pada item
+    item.start_time = newStartTime
+    item.end_time = newEndTime
+
+    // mengupdate itemlist dengan item yang telah diupdate
+    const updatedItemList = [...itemlist]
+    updatedItemList[itemIndex] = item
+    setitemlist(updatedItemList)
+
+    const date = new Date(newStartTime)
+    const stardata = new Date(newEndTime)
+
+    const data = { id: itemId, startDate: date.toISOString(), endDate: stardata.toISOString() }
+
+    const response = await postData(data)
+  }
+
+  const handleItemResize = async (itemId, time, edge) => {
+    console.log(itemId)
+
+    const updatedItems = itemlist.map(item => {
+      if (item.id === itemId) {
+        if (edge === 'left') {
+          return {
+            ...item,
+            start_time: time
+          }
+        } else if (edge === 'right') {
+          return {
+            ...item,
+            end_time: time
+          }
+        }
+      }
+
+      return item
+    })
+    setitemlist(updatedItems)
+    const updatedItem = itemlist.find(item => item.id === itemId)
+    const date = new Date(time)
+    const stardata = new Date(updatedItem.start_time)
+
+    const data = { id: itemId, startDate: stardata.toISOString(), endDate: date.toISOString() }
+
+    const response = await postData(data)
+  }
+
+  const getLatestEndTime = itemlist => {
+    const sortedItems = [...itemlist].sort((a, b) => {
+      if (moment(a.end_time).isAfter(moment(b.end_time))) return -1
+      if (moment(b.end_time).isAfter(moment(a.end_time))) return 1
+
+      return 0
+    })
+
+    return sortedItems[0].end_time
+  }
+
+  useEffect(() => {
+    const latestEndTime = getLatestEndTime(itemlist)
+    setlastime(latestEndTime)
+  }, [itemlist])
 
   return (
     <>
@@ -93,7 +172,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
         <Grid item xs={12}>
           <Timeline
             groups={groups}
-            items={items}
+            items={itemlist}
             defaultTimeStart={moment().add(0, 'day')}
             defaultTimeEnd={moment().add(30, 'day')}
             headerLabelFormats={{ year: 'YYYY', month: 'MMMM' }}
@@ -102,6 +181,8 @@ const TimelinePage = ({ tasks, Jobs }) => {
             itemHeight={itemHeight} // set tinggi item
             fixedHeader='fixed'
             sidebarWidth={250}
+            onItemMove={handleItemMove}
+            onItemResize={handleItemResize}
           >
             <TimelineMarkers>
               <TodayMarker>
@@ -116,23 +197,12 @@ const TimelinePage = ({ tasks, Jobs }) => {
                 }}
               </TodayMarker>
 
-              <CustomMarker date={lastEndTime}>
+              <CustomMarker date={lasttime}>
                 {({ styles, date }) => {
                   const customStyles = {
                     ...styles,
                     backgroundColor: 'red',
                     width: '10px'
-                  }
-
-                  return <div style={customStyles} onClick={undefined} />
-                }}
-              </CustomMarker>
-              <CustomMarker date={lastEndTime2}>
-                {({ styles, date }) => {
-                  const customStyles = {
-                    ...styles,
-                    backgroundColor: 'Black',
-                    width: '7px'
                   }
 
                   return <div style={customStyles} onClick={undefined} />
@@ -166,6 +236,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
 export default TimelinePage
 
 export async function getServerSideProps() {
+  const prisma = new PrismaClient()
   const tasks = await prisma.Task.findMany()
   const Jobs = await prisma.Job.findMany()
 
