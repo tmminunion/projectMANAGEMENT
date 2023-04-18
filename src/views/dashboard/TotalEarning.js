@@ -73,13 +73,13 @@ const TotalEarning = ({ countJOB, countJOBselesai, counts, SetVanena }) => {
 
   data[0].amount = `${parseInt(countJOB0f_prio)}/${parseInt(countJOB0f_prio) + parseInt(countJOB0_prio)} - ${
     data[0].progress
-  }%`
+  }% (-${parseInt(countJOB0_prio)})`
   data[1].amount = `${parseInt(countJOB1f_prio)}/${parseInt(countJOB1f_prio) + parseInt(countJOB1_prio)} - ${
     data[1].progress
-  }%`
+  }% (-${parseInt(countJOB1_prio)})`
   data[2].amount = `${parseInt(countJOB2f_prio)}/${parseInt(countJOB2f_prio) + parseInt(countJOB2_prio)} - ${
     data[2].progress
-  }%`
+  }% (-${parseInt(countJOB2_prio)})`
   const one0 = parseInt(data[0].progress) * 9
   const one1 = parseInt(data[1].progress) * 3
 

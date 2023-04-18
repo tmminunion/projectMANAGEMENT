@@ -173,7 +173,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
           <Timeline
             groups={groups}
             items={itemlist}
-            defaultTimeStart={moment().add(0, 'day')}
+            defaultTimeStart={moment().add(-1, 'day')}
             defaultTimeEnd={moment().add(30, 'day')}
             headerLabelFormats={{ year: 'YYYY', month: 'MMMM' }}
             headerBackgroundColor='blue'
@@ -190,7 +190,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
                   const customStyles = {
                     ...styles,
                     backgroundColor: 'blue',
-                    width: '10px'
+                    width: '8px'
                   }
 
                   return <div style={customStyles} onClick={undefined} />
@@ -202,7 +202,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
                   const customStyles = {
                     ...styles,
                     backgroundColor: 'red',
-                    width: '10px'
+                    width: '8px'
                   }
 
                   return <div style={customStyles} onClick={undefined} />
