@@ -72,7 +72,7 @@ const LoginPage = () => {
     e.preventDefault()
     signIn('credentials', { user, pwd })
       .then(() => {
-        // Route callback untuk pengguna berhasil masuk
+        console.log('login lah')
         router.push('/')
       })
       .catch(() => {

@@ -30,6 +30,19 @@ const navigation = () => {
       title: 'Timeline',
       icon: BookOutline,
       path: '/timeline'
+    },
+    {
+      title: 'Tugas On Progress',
+      icon: BookOutline,
+      path: '/tugas/onprogress/'
+    },
+    {
+      title: 'Tugas Selesai',
+      icon: BookOutline,
+      path: '/tugas'
+    },
+    {
+      sectionTitle: 'Project'
     }
   ]
 }

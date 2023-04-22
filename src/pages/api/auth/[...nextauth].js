@@ -19,6 +19,7 @@ export default NextAuth({
         try {
           const response = await axios.post(process.env.LINK_LOGIN, credentials)
           const user = response.data
+          console.log('login User = ', user, response.status)
           if (response.status === 200) {
             return {
               id: user.data.id,

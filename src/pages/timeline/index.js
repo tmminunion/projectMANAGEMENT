@@ -10,16 +10,17 @@ import 'react-calendar-timeline/lib/Timeline.css'
 import moment from 'moment'
 import { postData } from 'src/@api/axios'
 import Grid from '@mui/material/Grid'
-
+import SwipeableTemporaryDrawer from 'src/@timeline/offcanvas'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import { PrismaClient } from '@prisma/client'
 import { useState, useEffect } from 'react'
+import { getLatestEndTime } from 'src/@timeline/index'
 
 const TimelinePage = ({ tasks, Jobs }) => {
   let lastEndTime = moment()
   let lastEndTime2 = moment()
-
+  const [nudodol, setnudodol] = useState(false)
   const today = moment().startOf('day')
 
   const items = Jobs.map((task, i) => {
@@ -70,9 +71,6 @@ const TimelinePage = ({ tasks, Jobs }) => {
       canResize: canResize,
 
       itemProps: {
-        onDoubleClick: () => {
-          console.log('You clicked double!')
-        },
         style: { background: backgroundColor, color: 'black' } // tambahkan style
       }
     }
@@ -84,10 +82,10 @@ const TimelinePage = ({ tasks, Jobs }) => {
   const groups = tasks.map(task => ({
     id: task.id,
     title: task.name,
-    stackItems: true
+    stackItems: false
   }))
 
-  const itemHeight = 30 // set tinggi item
+  const itemHeight = 50 // set tinggi item
   const height = groups.length * itemHeight + 100 // hitung tinggi halaman
 
   const handleItemMove = async (itemId, dragTime, newGroupOrder) => {
@@ -146,15 +144,9 @@ const TimelinePage = ({ tasks, Jobs }) => {
     const response = await postData(data)
   }
 
-  const getLatestEndTime = itemlist => {
-    const sortedItems = [...itemlist].sort((a, b) => {
-      if (moment(a.end_time).isAfter(moment(b.end_time))) return -1
-      if (moment(b.end_time).isAfter(moment(a.end_time))) return 1
-
-      return 0
-    })
-
-    return sortedItems[0].end_time
+  const dclickna = async (itemId, e, time) => {
+    console.log(itemId)
+    setnudodol(true)
   }
 
   useEffect(() => {
@@ -169,6 +161,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
           <Typography variant='h5'>TIMELINE PROJECT</Typography>
           <Typography variant='body2'>Planing Waktu Kerja Project </Typography>
         </Grid>
+        <SwipeableTemporaryDrawer dodol={nudodol} setnudodol={setnudodol} />
         <Grid item xs={12}>
           <Timeline
             groups={groups}
@@ -183,6 +176,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
             sidebarWidth={250}
             onItemMove={handleItemMove}
             onItemResize={handleItemResize}
+            onItemDoubleClick={dclickna}
           >
             <TimelineMarkers>
               <TodayMarker>
