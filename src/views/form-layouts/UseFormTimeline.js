@@ -12,19 +12,34 @@ import Phone from 'mdi-material-ui/Phone'
 import EmailOutline from 'mdi-material-ui/EmailOutline'
 import AccountOutline from 'mdi-material-ui/AccountOutline'
 import MessageOutline from 'mdi-material-ui/MessageOutline'
+import { postGetDataid } from 'src/@api/axios'
+import { useState, useEffect } from 'react'
 
-const FormLayoutsIcons = () => {
+const FormLayoutsIcons = ({ idnya }) => {
+  const [namatugas, setnamatugas] = useState()
+
+  const getJobnya = async () => {
+    const data = { idnya: idnya }
+    const response = await postGetDataid(data)
+    console.log(response)
+
+    setnamatugas(response.name)
+  }
+
+  useEffect(() => {
+    getJobnya()
+  }, [idnya])
+
   return (
-    <Card>
-      <CardHeader title='Basic with Icons' titleTypographyProps={{ variant: 'h6' }} />
+    <>
       <CardContent>
         <form onSubmit={e => e.preventDefault()}>
           <Grid container spacing={5}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label='Full Name'
-                placeholder='Leonard Carter'
+                label='Nama Tugas'
+                value={namatugas}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position='start'>
@@ -90,7 +105,7 @@ const FormLayoutsIcons = () => {
           </Grid>
         </form>
       </CardContent>
-    </Card>
+    </>
   )
 }
 

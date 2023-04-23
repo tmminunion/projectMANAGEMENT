@@ -18,20 +18,21 @@ export const postData = async data => {
   }
 }
 
-export const getDataById = async id => {
+export const postGetDataid = async data => {
   try {
-    const response = await fetch(`${API_URL}/data/${id}`, {
-      method: 'GET',
+    const response = await fetch(`/api/db/job/postgetid`, {
+      method: 'POST',
       headers: {
         Authorization: 'Bearer <your-access-token>',
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify(data)
     })
     const responseData = await response.json()
 
     return responseData
   } catch (error) {
-    console.error('Error during GET request:', error)
+    console.error('Error during POST request:', error)
 
     return null
   }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
-import Button from '@mui/material/Button'
+import FormLayoutsIcons from 'src/views/form-layouts/UseFormTimeline'
 import List from '@mui/material/List'
 import Divider from '@mui/material/Divider'
 import ListItem from '@mui/material/ListItem'
@@ -9,9 +9,9 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
-import MailIcon from '@mui/icons-material/Mail'
+import MailIcon from '@mui/icons-material/Assistant'
 
-export default function SwipeableTemporaryDrawer({ dodol, setnudodol }) {
+export default function SwipeableTemporaryDrawer({ dodol, setnudodol, idnya }) {
   const [state, setState] = useState(dodol)
 
   useEffect(() => {
@@ -31,33 +31,22 @@ export default function SwipeableTemporaryDrawer({ dodol, setnudodol }) {
     console.log('sdf sdjbchj')
   }
 
-  const list = anchor => (
-    <Box
-      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 650 }}
-      role='presentation'
-      onClick={toggleDrawer(false)}
-      onKeyDown={toggleDrawer(false)}
-    >
+  const list = idnya => (
+    <Box sx={{ width: 650 }} role='presentation'>
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              {' '}
+              <MailIcon />
+            </ListItemIcon>
+            <ListItemText primary={'EDIT TUGAS'} />
+          </ListItemButton>
+        </ListItem>
       </List>
       <Divider />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <FormLayoutsIcons idnya={idnya} />
       </List>
     </Box>
   )
@@ -65,7 +54,7 @@ export default function SwipeableTemporaryDrawer({ dodol, setnudodol }) {
   return (
     <div>
       <SwipeableDrawer anchor={'right'} open={state} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
-        {list('right')}
+        {list(idnya)}
       </SwipeableDrawer>
     </div>
   )

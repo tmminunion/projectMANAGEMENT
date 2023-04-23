@@ -21,6 +21,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
   let lastEndTime = moment()
   let lastEndTime2 = moment()
   const [nudodol, setnudodol] = useState(false)
+  const [idnya, setidnya] = useState(0)
   const today = moment().startOf('day')
 
   const items = Jobs.map((task, i) => {
@@ -145,7 +146,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
   }
 
   const dclickna = async (itemId, e, time) => {
-    console.log(itemId)
+    setidnya(itemId)
     setnudodol(true)
   }
 
@@ -161,7 +162,7 @@ const TimelinePage = ({ tasks, Jobs }) => {
           <Typography variant='h5'>TIMELINE PROJECT</Typography>
           <Typography variant='body2'>Planing Waktu Kerja Project </Typography>
         </Grid>
-        <SwipeableTemporaryDrawer dodol={nudodol} setnudodol={setnudodol} />
+        <SwipeableTemporaryDrawer dodol={nudodol} setnudodol={setnudodol} idnya={idnya} />
         <Grid item xs={12}>
           <Timeline
             groups={groups}

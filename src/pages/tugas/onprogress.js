@@ -18,7 +18,7 @@ function JobsPage({ incompleteJobs }) {
   )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const prisma = new PrismaClient()
 
   const incompleteJobs = await prisma.job.findMany({
