@@ -1,68 +1,68 @@
-import NextAuth, { NextAuthOptions } from 'next-auth'
+import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import axios from 'axios'
+import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcrypt'
+
+const prisma = new PrismaClient()
 
 export default NextAuth({
   session: {
-    strategy: 'jwt'
+    strategy: 'jwt',
   },
 
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
-        noreg: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+        email: { label: 'Email', type: 'text', placeholder: 'jsmith@example.com' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize(credentials, req) {
-        try {
-          const response = await axios.post(process.env.LINK_LOGIN, credentials)
-          const user = response.data
-          console.log('login User = ', user, response.status)
-          if (response.status === 200) {
-            return {
-              id: user.data.id,
-              name: user.data.nama,
-              noreg: user.data.noreg,
-              email: user.data.noreg,
-              token: user.data.token,
-              role: 'user'
-            }
-          } else {
-            // Jika response status code bukan OK (tidak 200), login gagal
-            return null
-          }
-        } catch (error) {
-          // Tangani error yang terjadi saat panggilan API
-          console.error(error)
+      async authorize(credentials) {
+        if (!credentials.email || !credentials.password) {
+          throw new Error('Email dan password harus diisi!')
+        }
 
-          return null
+        // Cari user di database
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email }
+        })
+
+        if (!user) {
+          throw new Error('User tidak ditemukan!')
+        }
+
+        // Cek password
+        const isValid = await bcrypt.compare(credentials.password, user.password)
+
+        if (!isValid) {
+          throw new Error('Password salah!')
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          noreg: user.noreg
         }
       }
     })
   ],
-  pages: {
-    // signIn: '/auth/signin',
-    signOut: '/auth/signout',
-    error: '?error=', // Error code passed in query string as ?error=
-    verifyRequest: '/auth/verify-request', // (used for check email message)
-    newUser: '/auth/new-user' // New users wil
-  },
+
   callbacks: {
     async session({ session, token }) {
-      return {
-        ...session,
-        token
-      }
+      session.user = token
+      return session
     },
     async jwt({ token, user }) {
       if (user) {
-        return user
+        token.id = user.id
+        token.name = user.name
+        token.email = user.email
+        token.noreg = user.noreg
       }
-
       return token
     }
   },
+
   secret: process.env.JWT_SECRET
 })

@@ -1,0 +1,92 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+// Define model Project
+model Project {
+    id          String    @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    description String?
+    startDate   DateTime  @default(now())
+    endDate     DateTime  @default(now())
+    status      Int       @default(0)
+    progress    Int       @default(0)
+    onprogress  Int       @default(0)
+    priority    Int       @default(0)
+    percent     Int       @default(0)
+    Task        Task[]
+    Post        Post[]
+    Jobs        Job[]
+    Catatan     Catatan[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+}
+
+// Define model Task
+model Task {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    description String?
+    startDate   DateTime @default(now())
+    endDate     DateTime @default(now())
+    status      Int      @default(0)
+    progress    Int      @default(0)
+    onprogress  Int      @default(0)
+    priority    Int      @default(0)
+    percent     Int      @default(0)
+    projectId   String?
+    Job         Job[]
+    Project     Project? @relation(fields: [projectId], references: [id])
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+// Define model Job
+model Job {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    description String?
+    status      Int      @default(0)
+    statustask  Int      @default(0)
+    startDate   DateTime @default(now())
+    endDate     DateTime @default(now())
+    progress    Int      @default(0)
+    onprogress  Int      @default(0)
+    priority    Int      @default(0)
+    percent     Int      @default(0)
+    Task        Task?    @relation(fields: [taskId], references: [id])
+    taskId      String?
+    Project     Project? @relation(fields: [projectId], references: [id])
+    projectId   String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+}
+
+model Post {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    authorId  String
+    nama      String
+    title     String
+    published Boolean  @default(false)
+    project   Project  @relation(fields: [projectId], references: [id])
+    projectId String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Catatan {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    authorId  String
+    nama      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    title     String
+    published Boolean  @default(false)
+    Project   Project? @relation(fields: [projectId], references: [id])
+    projectId String?
+}
