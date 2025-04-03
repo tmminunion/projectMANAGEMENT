@@ -51,6 +51,7 @@ export default NextAuth({
   callbacks: {
     async session({ session, token }) {
       session.user = token
+      
       return session
     },
     async jwt({ token, user }) {
@@ -60,6 +61,7 @@ export default NextAuth({
         token.email = user.email
         token.noreg = user.noreg
       }
+
       return token
     }
   },
